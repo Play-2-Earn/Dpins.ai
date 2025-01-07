@@ -1,0 +1,27 @@
+/* Zoom-out button positioned in the bottom-right corner */
+.zoom-out-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: rgba(32, 201, 151, 0.35);
+    border-radius: 50%;
+    padding: 5px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 24px;
+    box-shadow: inset 0 -4px 0px rgba(0, 0, 0, 0.50);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    z-index: 1000;
+  }
+
+  /* Hover effect to scale up */
+  .zoom-out-button:hover {
+    transform: scale(1.1);
+  }
+  

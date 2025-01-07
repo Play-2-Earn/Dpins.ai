@@ -1,0 +1,12 @@
+body{
+  background-color: #0D1B2A;
+  font-family: 'Expletus Sans', sans-serif;
+  color: #f0f3f5;
+  /* cursor: url("../public/cursor.png");  */
+}
+
+.mapContainer {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+}
