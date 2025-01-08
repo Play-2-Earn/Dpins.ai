@@ -1,15 +1,11 @@
-import React, { useEffect } from "react";
-import '../component/styles/home.css'
+import React from 'react';
+import { Globe2, Shield, Coins,  ArrowRight } from 'lucide-react';
 import { Link } from "react-router-dom";
-import Header from "./header";
-import Footer from "./footer";
-import Globe from "./Globe";
-import chainImage from "/chain_horizontal.png";
-import mainlogo from '/mainLogo.png'
-import Button from "./popups/popups_component/button";
+import ChainAnimation from './ChainAnimation';
+import Footer from './footer';
+import Header from './header';
 
-const Home = () => {
-
+export default function Home() {
     const handleStart = () => {
         if (sessionStorage.getItem("jwtToken")) {
             window.location.href = "/explore";
@@ -17,162 +13,154 @@ const Home = () => {
             alert("Please login first");
         }
     }
+  return (
+   
+    <div className="min-h-screen bg-gray-900 text-white">
+         <Header />
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-900/20 to-gray-900"></div>
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute w-96 h-96 bg-cyan-500/20 rounded-full filter blur-3xl top-1/4 -left-48 animate-pulse-slow"></div>
+          <div className="absolute w-96 h-96 bg-blue-500/20 rounded-full filter blur-3xl bottom-1/4 -right-48 animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
+        </div>
+        <div className="relative z-10 container mx-auto px-6 text-center">
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text animate-float">
+            Decentralizing the World, One Pin at a Time
+          </h1>
+          <p className="text-xl md:text-2xl text-gray-300 mb-8">
+            Activate, Verify, and Earn with DePIN infrastructure anywhere on the globe
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button className="px-8 py-3 bg-cyan-500 hover:bg-cyan-600 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 animate-glow">
+            <Link onClick={handleStart}>Explore the Map</Link>
+            </button>
+            <button className="px-8 py-3 border border-cyan-500 rounded-full font-semibold hover:bg-cyan-500/10 transition-all duration-300 glass-effect">
+              Visit DePINS Store
+            </button>
+          </div>
+        </div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80')] opacity-10 bg-cover bg-center"></div>
+      </section>
 
-    useEffect(() => {
-        const handleScroll = () => {
-            const scrollPosition = window.scrollY;
-            const chainElements = document.querySelectorAll('.chain-container');
+      {/* About Section */}
+      <section className="py-20 bg-gray-800/50">
+        <div className="container mx-auto px-6">
+          <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text">What is DePINS.io?</h2>
+          <div className="grid md:grid-cols-3 gap-12">
+            {[
+              {
+                icon: <Globe2 className="w-12 h-12 text-cyan-400" />,
+                title: "Global Network",
+                description: "Connect and contribute to a worldwide decentralized infrastructure"
+              },
+              {
+                icon: <Shield className="w-12 h-12 text-cyan-400" />,
+                title: "Secure Infrastructure",
+                description: "Built on blockchain technology ensuring maximum security"
+              },
+              {
+                icon: <Coins className="w-12 h-12 text-cyan-400" />,
+                title: "Earn Rewards",
+                description: "Get compensated for your contributions to the network"
+              }
+            ].map((item, index) => (
+              <div key={index} className="glass-effect p-8 rounded-2xl hover:bg-gray-700/50 transition-all duration-500 group hover:scale-105">
+                <div className="mb-6 transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12">{item.icon}</div>
+                <h3 className="text-xl font-semibold mb-4">{item.title}</h3>
+                <p className="text-gray-400">{item.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-            chainElements.forEach((element, index) => {
-                // Set different speeds for each chain
-                const speedMultiplier = index === 0 ? 1 : 0.5;
-                element.style.backgroundPositionX = `${scrollPosition * speedMultiplier}px`;
-            });
-
-            const marqueeContainer = document.querySelector('.marquee');
-
-            if (marqueeContainer) {
-                marqueeContainer.style.transform = `translateX(${-scrollPosition * 0.5}px)`;
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll);
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
-
-
-    return (
-        <>
-            <Header />
-
-            <div className="glob_area relative flex justify-center items-center h-80 sm:h-screen mt-10 sm:mt-12">
-                <Globe />
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center px-4">
-                    <h1 className="drop-shadow-xl text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white">Are you ready to explore?</h1>
-                    {/* changed link to button for auth */}
-                    <Link onClick={handleStart} className=" rounded-3xl px-4 py-2 md:px-6 md:py-3 mt-4 bg-emerald-400 shadow-lg shadow-emerald-800 hover:bg-emerald-300 hover:text-grey hover:shadow-sm hover:shadow-emerald-500 transition-shadow ease-in-out duration-300 inline-block" style={{ minWidth: '140px' }}>Start Game </Link>
+      {/* How It Works */}
+      <section className="py-20 bg-gradient-to-b from-gray-900 to-gray-800">
+        <div className="container mx-auto px-6">
+          <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text">How Does It Work?</h2>
+          <div className="grid md:grid-cols-4 gap-8">
+            {[
+              { step: "1", title: "Find a Pin Near You", desc: "Locate available pins on our interactive map" },
+              { step: "2", title: "Complete Tasks", desc: "Follow instructions to activate the pin" },
+              { step: "3", title: "Verify and Earn", desc: "Get rewards for successful activations" },
+              { step: "4", title: "Redeem Points", desc: "Exchange points for stellar rewards" }
+            ].map((item, index) => (
+              <div key={index} className="relative">
+                <div className="glass-effect h-[300px] p-8 rounded-2xl border border-cyan-900/30 hover:border-cyan-500/50 transition-all duration-500 group hover:scale-105">
+                  <div className="text-cyan-400 text-6xl font-bold mb-4 group-hover:scale-110 transition-transform duration-500">{item.step}</div>
+                  <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+                  <p className="text-gray-400">{item.desc}</p>
                 </div>
-            </div>
+                {index < 3 && (
+                  <ArrowRight className="hidden md:block absolute top-1/2 -right-6 transform -translate-y-1/2 text-cyan-500/50 animate-pulse" />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-            <div className="second_ele bg-transparent mt-10 mb-10 px-4 sm:h-80 sm:px-2 py-6">
-                <div className="flex flex-col sm:flex-row justify-end sm:mr-10">
-                    <div className="sm:text-right">
-                        <h1 className="text-center sm:text-right text-2xl sm:text-3xl">Follow Us on Socials</h1>
-                        <p className="mt-2 text-center sm:text-right text-wrap custom-paragraph">
-                            Stay connected and never miss an update! Follow us on our social media channels
-                            for the latest news, exclusive content, and behind-the-scenes sneak peeks. Join
-                            the conversation and be part of our community!
-                        </p>
-                    </div>
+      {/* Chain Animation */}
+      <ChainAnimation />
+
+      {/* Store Preview */}
+      <section className="py-20 bg-gray-800/50">
+        <div className="container mx-auto px-6">
+          <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text">DePINS Store</h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80",
+                title: "IoT Device Kit",
+                price: "$99",
+                tokens: "100 Tokens"
+              },
+              {
+                image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80",
+                title: "Advanced Antenna",
+                price: "$199",
+                tokens: "200 Tokens"
+              },
+              {
+                image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80",
+                title: "Network Node",
+                price: "$299",
+                tokens: "300 Tokens"
+              }
+            ].map((item, index) => (
+              <div key={index} className="glass-effect rounded-2xl overflow-hidden group hover:scale-105 transition-all duration-500">
+                <div className="relative overflow-hidden">
+                  <img src={item.image} alt={item.title} className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-60"></div>
                 </div>
-
-                <div className="flex justify-center sm:justify-end sm:mr-14 mt-6">
-                    <button className="rounded-3xl mr-4 px-4 py-2 bg-emerald-400 shadow-lg shadow-emerald-800 hover:bg-emerald-300 hover:text-grey hover:shadow-sm hover:shadow-emerald-500 transition-shadow transition-2 ease-in-out" >Whitepaper</button>
-                    <button className="rounded-3xl px-4 py-2 bg-emerald-400 shadow-lg shadow-emerald-800 hover:bg-emerald-300 hover:text-grey hover:shadow-sm hover:shadow-emerald-500 transition-shadow transition-2 ease-in-out" >FAQ's</button>
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+                  <p className="text-cyan-400">{item.price} | {item.tokens}</p>
                 </div>
-            </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-            <div className="third_element mt-10 px-4 sm:px-0 relative overflow-hidden h-auto">
-                <div className="flex flex-col sm:flex-row sm:justify-end sm:mr-10">
-                    <div className="text-center sm:text-right">
-                        <h1 className="mt-8 text-4xl sm:text-6xl px-0 sm:px-14"><span className="mr-0 sm:mr-20">EXPLORE</span><br /><span className="">COMPLETE</span><br /><span className="earn">EARN.</span></h1>
-                        <p className="mt-6 text-center sm:text-right custom-paragraph_sec">
-                            Stake City is an interactive, immersive platform that blends gaming with exploration. Users can search for cities on a 3D Earth model, target landmarks, and ask questions related to specific locations. Other users respond to these questions, and the best answer, selected by the inquirer, earns rewards. This collaborative experience fosters community engagement, learning, and fun, combining elements of discovery and competition. Stake City stands out by turning global exploration into a rewarding game, making it both educational and entertaining.
-                        </p>
-                    </div>
-                </div>
-                {/* Spacer for separating content and chains */}
-                <div className="spacer h-16 md:h-20 lg:h-24"></div>
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-b from-gray-800 to-gray-900">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-4xl font-bold mb-8 bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text">Start Building Decentralized Networks Today</h2>
+          <p className="text-xl text-gray-400 mb-8">Join thousands of contributors worldwide</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button className="px-8 py-3 bg-cyan-500 hover:bg-cyan-600 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 animate-glow">
+              Sign Up for Free
+            </button>
+            <button className="px-8 py-3 border border-cyan-500 rounded-full font-semibold hover:bg-cyan-500/10 transition-all duration-300 glass-effect">
+              Learn More
+            </button>
+          </div>
+        </div>
+      </section>
 
-            </div>
-
-            {/* Chains as a background */}
-            <div className="chains sm:py-32">
-                <div
-                    className="chain-container w-full h-16"
-                    style={{
-                        backgroundImage: `url(${chainImage})`,
-                        backgroundRepeat: 'repeat-x',
-                        backgroundSize: 'contain',
-                        transform: 'rotate(10deg)',
-                        backgroundPositionY: 'center',
-                    }}
-                ></div>
-                {/* Chains as a background */}
-                <div
-                    className="chain-container w-full h-16 mt-20"
-                    style={{
-                        backgroundImage: `url(${chainImage})`,
-                        backgroundRepeat: 'repeat-x',
-                        backgroundSize: 'contain',
-                        transform: 'rotate(15deg)',
-                        backgroundPositionY: 'center',
-                    }}
-                ></div>
-            </div>
-
-            <div className="featured-section mt-20 text-center overflow-hidden">
-                <h2 className="text-2xl sm:text-4xl font-bold text-emerald-400">FEATURED IN</h2>
-                <div className="featured-logos mt-6 sm:mt-10 flex items-center">
-                    <div className="marquee flex space-x-6 w-full">
-                        {[...Array(2)].map((_, idx) => (
-                            <React.Fragment key={idx}>
-                                <div className="featured-logo text-gray-300 text-2xl sm:text-4xl lg:text-5xl opacity-20 font-bold">Stakes</div>
-                                <img src={mainlogo} alt="Stake City Logo" className="h-8 sm:h-12 lg:h-16 opacity-20 mx-2 sm:mx-4" />
-                                <div className="featured-logo text-gray-300 text-2xl sm:text-4xl lg:text-5xl opacity-20 font-bold">Stakes</div>
-                                <img src={mainlogo} alt="Stake City Logo" className="h-8 sm:h-12 lg:h-16 opacity-20 mx-2 sm:mx-4" />
-                                <div className="featured-logo text-gray-300 text-2xl sm:text-4xl lg:text-5xl opacity-20 font-bold">Stakes</div>
-                                <img src={mainlogo} alt="Stake City Logo" className="h-8 sm:h-12 lg:h-16 opacity-20 mx-2 sm:mx-4" />
-                                <div className="featured-logo text-gray-300 text-2xl sm:text-4xl lg:text-5xl opacity-20 font-bold">Stakes</div>
-                                <img src={mainlogo} alt="Stake City Logo" className="h-8 sm:h-12 lg:h-16 opacity-20 mx-2 sm:mx-4" />
-                                <div className="featured-logo text-gray-300 text-2xl sm:text-4xl lg:text-5xl opacity-20 font-bold">Stakes</div>
-                                <img src={mainlogo} alt="Stake City Logo" className="h-8 sm:h-12 lg:h-16 opacity-20 mx-2 sm:mx-4" />
-                                <div className="featured-logo text-gray-300 text-2xl sm:text-4xl lg:text-5xl opacity-20 font-bold">Stakes</div>
-                                <img src={mainlogo} alt="Stake City Logo" className="h-8 sm:h-12 lg:h-16 opacity-20 mx-2 sm:mx-4" />
-                                <div className="featured-logo text-gray-300 text-2xl sm:text-4xl lg:text-5xl opacity-20 font-bold">Stakes</div>
-                                <img src={mainlogo} alt="Stake City Logo" className="h-8 sm:h-12 lg:h-16 opacity-20 mx-2 sm:mx-4" />
-                                <div className="featured-logo text-gray-300 text-2xl sm:text-4xl lg:text-5xl opacity-20 font-bold">Stakes</div>
-                                <img src={mainlogo} alt="Stake City Logo" className="h-8 sm:h-12 lg:h-16 opacity-20 mx-2 sm:mx-4" />
-                                <div className="featured-logo text-gray-300 text-2xl sm:text-4xl lg:text-5xl opacity-20 font-bold">Stakes</div>
-                                <img src={mainlogo} alt="Stake City Logo" className="h-8 sm:h-12 lg:h-16 opacity-20 mx-2 sm:mx-4" />
-                                <div className="featured-logo text-gray-300 text-2xl sm:text-4xl lg:text-5xl opacity-20 font-bold">Stakes</div>
-                                <img src={mainlogo} alt="Stake City Logo" className="h-8 sm:h-12 lg:h-16 opacity-20 mx-2 sm:mx-4" />
-                                <div className="featured-logo text-gray-300 text-2xl sm:text-4xl lg:text-5xl opacity-20 font-bold">Stakes</div>
-                                <img src={mainlogo} alt="Stake City Logo" className="h-8 sm:h-12 lg:h-16 opacity-20 mx-2 sm:mx-4" />
-                                <div className="featured-logo text-gray-300 text-2xl sm:text-4xl lg:text-5xl opacity-20 font-bold">Stakes</div>
-                                <img src={mainlogo} alt="Stake City Logo" className="h-8 sm:h-12 lg:h-16 opacity-20 mx-2 sm:mx-4" />
-                                <div className="featured-logo text-gray-300 text-2xl sm:text-4xl lg:text-5xl opacity-20 font-bold">Stakes</div>
-                                <img src={mainlogo} alt="Stake City Logo" className="h-8 sm:h-12 lg:h-16 opacity-20 mx-2 sm:mx-4" />
-                                <div className="featured-logo text-gray-300 text-2xl sm:text-4xl lg:text-5xl opacity-20 font-bold">Stakes</div>
-                                <img src={mainlogo} alt="Stake City Logo" className="h-8 sm:h-12 lg:h-16 opacity-20 mx-2 sm:mx-4" />
-                                <div className="featured-logo text-gray-300 text-2xl sm:text-4xl lg:text-5xl opacity-20 font-bold">Stakes</div>
-                                <img src={mainlogo} alt="Stake City Logo" className="h-8 sm:h-12 lg:h-16 opacity-20 mx-2 sm:mx-4" />
-                                <div className="featured-logo text-gray-300 text-2xl sm:text-4xl lg:text-5xl opacity-20 font-bold">Stakes</div>
-                                <img src={mainlogo} alt="Stake City Logo" className="h-8 sm:h-12 lg:h-16 opacity-20 mx-2 sm:mx-4" />
-                                <div className="featured-logo text-gray-300 text-2xl sm:text-4xl lg:text-5xl opacity-20 font-bold">Stakes</div>
-                                <img src={mainlogo} alt="Stake City Logo" className="h-8 sm:h-12 lg:h-16 opacity-20 mx-2 sm:mx-4" />
-                                <div className="featured-logo text-gray-300 text-2xl sm:text-4xl lg:text-5xl opacity-20 font-bold">Stakes</div>
-                            </React.Fragment>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            <div className="last_element mt-10 px-4 sm:px-0">
-                <div className="flex flex-col mt-20 items-center">
-                    <h1 className="text-3xl sm:text-6xl text-center">Connect To Keep <br /> Building With Us.</h1>
-                    <p className="text-center mt-8 px-4 sm:px-0">Enter your email to subscribe to our newsletter and receive updates directly from us</p>
-                    <input type="text" placeholder="Email address" className="mt-10 h-10 w-80 px-3 rounded-xl mx-auto" />
-                    <Link to="/explore" className="w-40 mt-9 px-4 py-2 bg-emerald-400 rounded-3xl shadow-lg shadow-emerald-800 hover:bg-emerald-300 hover:text-grey hover:shadow-sm hover:shadow-emerald-500 transition-shadow transition-2 ease-in-out text-center" >Submit</Link>
-                </div>
-            </div>
-
-            <Footer />
-        </>
-    )
+    <Footer />
+    </div>
+  );
 }
-
-export default Home;

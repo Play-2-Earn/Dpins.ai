@@ -6,15 +6,13 @@ import SignUpPopUp from "./popups/signUpPopUp";
 import LogInPopUp from "./popups/logInPopUp";
 import ForgetPasswordPopup from "./popups/forgetPasswordPopup";
 import profilePic from '../images/profileIcon.png';
-import { HiOutlineMenuAlt4, HiX } from "react-icons/hi";  // Importing icons for burger menu (open/close)
+import { HiOutlineMenuAlt4, HiX } from "react-icons/hi";  
 
 const Header = () => {
     const [signUpPopUp, setsSignUpPopUp] = useState(false);
     const [logInPopUp, setlogInPopUp] = useState(false);
     const [forgetPass, setforgetPass] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // Track if user is logged in
-
-    // State to track if the mobile menu is open (for burger menu functionality)
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
@@ -26,7 +24,6 @@ const Header = () => {
         }
     }, []);
 
-    // Function to toggle the burger menu (open/close)
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
@@ -34,6 +31,7 @@ const Header = () => {
     const signUpPopUpOpen = () => {
         setsSignUpPopUp(true);
     };
+    
     const onCloseSignUp = () => {
         setsSignUpPopUp(false);
     };
@@ -48,7 +46,7 @@ const Header = () => {
 
     const handleLoginSuccess = () => {
         setIsLoggedIn(true);
-        OnCloselogInPopUp(); // Close the login popup
+        OnCloselogInPopUp();
     };
 
     const AlreadyUserClick = () => {
@@ -72,70 +70,123 @@ const Header = () => {
 
     return (
         <>
-            <nav className="py-4 mx-6 flex justify-between items-center ">
-                {/* <ul className="flex flex-row flex-wrap justify-between items-center"> */}
-                <Link
-                    to="/"
-                    className="hover:cursor-pointer z-50"
-                >
-                    <img src={mainlogo} alt="Stake_city" className="w-20" />
-                </Link>
+            <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900/80 backdrop-blur-sm border-b border-gray-800">
+                <div className="container mx-auto px-6">
+                    <div className="flex justify-between items-center h-20">
+                        {/* Logo */}
+                        <Link to="/" className="hover:cursor-pointer">
+                            <img src={mainlogo} alt="Depins.io" className="w-28 transform hover:scale-105 transition-transform duration-300" />
+                        </Link>
 
-                {/* Burger menu button (shown only on mobile screens) */}
-                <div className="sm:hidden  z-[50]">
-                    <button onClick={toggleMenu}> {/* Toggles the mobile menu */}
-                        {/* Show 'X' icon when menu is open, otherwise show burger menu icon */}
-                        {isMenuOpen ? <HiX className="text-white w-8 h-8" /> : <HiOutlineMenuAlt4 className="text-white w-8 h-8" />}
-                    </button>
+                        {/* Desktop Navigation */}
+                        <div className="hidden sm:flex items-center space-x-4">
+                            {isLoggedIn ? (
+                                <Link to="/userdashboard" className="transform hover:scale-105 transition-transform duration-300">
+                                    <img 
+                                        src={profilePic} 
+                                        alt="userDashboard" 
+                                        className="w-10 h-10 rounded-full border-2 border-cyan-500/50 hover:border-cyan-400"
+                                    />
+                                </Link>
+                            ) : (
+                                <div className="flex space-x-4">
+                                    <button 
+                                        onClick={signUpPopUpOpen}
+                                        className="px-6 py-2 rounded-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold transition-all duration-300 transform hover:scale-105 animate-glow"
+                                    >
+                                        Sign Up
+                                    </button>
+                                    <button 
+                                        onClick={logInPopUpOpen}
+                                        className="px-6 py-2 rounded-full border border-cyan-500 text-white font-semibold hover:bg-cyan-500/10 transition-all duration-300"
+                                    >
+                                        Log In
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Mobile Menu Button */}
+                        <div className="sm:hidden">
+                            <button 
+                                onClick={toggleMenu}
+                                className="text-gray-300 hover:text-white transition-colors duration-300"
+                            >
+                                {isMenuOpen ? 
+                                    <HiX className="w-8 h-8" /> : 
+                                    <HiOutlineMenuAlt4 className="w-8 h-8" />
+                                }
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Log In or Dashboard Icon */}
-                <div className="hidden sm:flex space-x-2">
-                    {isLoggedIn ?
-                        (
-                            <Link to="/userdashboard">
-                                <img src={profilePic} alt="userDashboard" className="w-15 h-9 rounded-full" />
-                            </Link>
-                        )
-                        :
-                        (<>
-                            <button onClick={signUpPopUpOpen} className="rounded-3xl px-4 bg-emerald-400 py-2 shadow-lg shadow-emerald-800 hover:bg-emerald-300">
-                                Sign Up
-                            </button>
-                            <button onClick={logInPopUpOpen} className="rounded-3xl px-4 bg-emerald-400 py-2 shadow-lg shadow-emerald-800 hover:bg-emerald-300">
-                                Log In
-                            </button>
-                        </>)
-                    }
-                </div>
-
-                {/* Mobile Menu (only shown when the burger menu is open) */}
+                {/* Mobile Menu */}
                 {isMenuOpen && (
-                    <div className="sm:hidden absolute top-24 left-0 w-full text-white flex flex-col items-center space-y-4 py-4 z-50" style={{ backgroundColor: '#172435' }}>
-
-                        {/* If user is logged in, show profile icon */}
-                        {isLoggedIn ? (
-                            <Link to="/userdashboard" className="text-white px-4 py-2 rounded-md transition ease-in-out duration-200 active:bg-[#34D399] focus:bg-[#34D399]" onClick={toggleMenu}>
-                                <img src={profilePic} alt="userDashboard" className="w-12 h-12 rounded-full" />
-                            </Link>
-                        ) : (
-                            <>
-                                {/* Sign Up and Log In buttons for mobile view */}
-                                <button onClick={signUpPopUpOpen} className="rounded-3xl px-4 py-2 bg-emerald-400 shadow-lg shadow-emerald-800 active:bg-[#34D399] focus:bg-[#34D399] transition ease-in-out duration-200">
-                                    Sign Up
-                                </button>
-                                <button onClick={logInPopUpOpen} className="rounded-3xl px-4 py-2 bg-emerald-400 shadow-lg shadow-emerald-800 active:bg-[#34D399] focus:bg-[#34D399] transition ease-in-out duration-200">
-                                    Log In
-                                </button>
-                            </>
-                        )}
+                    <div className="sm:hidden">
+                        <div className="px-4 py-6 space-y-4 bg-gray-800/90 backdrop-blur-lg border-t border-gray-700">
+                            {isLoggedIn ? (
+                                <Link 
+                                    to="/userdashboard" 
+                                    className="flex justify-center"
+                                    onClick={toggleMenu}
+                                >
+                                    <img 
+                                        src={profilePic} 
+                                        alt="userDashboard" 
+                                        className="w-12 h-12 rounded-full border-2 border-cyan-500/50"
+                                    />
+                                </Link>
+                            ) : (
+                                <div className="flex flex-col space-y-4">
+                                    <button 
+                                        onClick={() => {
+                                            signUpPopUpOpen();
+                                            toggleMenu();
+                                        }}
+                                        className="w-full px-6 py-3 rounded-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold transition-all duration-300"
+                                    >
+                                        Sign Up
+                                    </button>
+                                    <button 
+                                        onClick={() => {
+                                            logInPopUpOpen();
+                                            toggleMenu();
+                                        }}
+                                        className="w-full px-6 py-3 rounded-full border border-cyan-500 text-white font-semibold hover:bg-cyan-500/10 transition-all duration-300"
+                                    >
+                                        Log In
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 )}
             </nav>
 
-            <SignUpPopUp signUpPopUpOpen={signUpPopUpOpen} onClose={onCloseSignUp} isOpen={signUpPopUp} AlreadyUserClick={AlreadyUserClick} onRegisterSuccess={logInPopUpOpen} />
-            <LogInPopUp logInPopUpOpen={logInPopUpOpen} isOpen={logInPopUp} onClose={OnCloselogInPopUp} NewToGame={NewToGame} forgetPassOpen={forgetPassOpen} onLoginSuccess={handleLoginSuccess} />
-            <ForgetPasswordPopup isOpen={forgetPass} onClose={forgetPassClose} />
+            {/* Add spacer to prevent content from hiding behind fixed header */}
+            <div className="h-20"></div>
+
+            {/* Popups */}
+            <SignUpPopUp 
+                signUpPopUpOpen={signUpPopUpOpen} 
+                onClose={onCloseSignUp} 
+                isOpen={signUpPopUp} 
+                AlreadyUserClick={AlreadyUserClick} 
+                onRegisterSuccess={logInPopUpOpen} 
+            />
+            <LogInPopUp 
+                logInPopUpOpen={logInPopUpOpen} 
+                isOpen={logInPopUp} 
+                onClose={OnCloselogInPopUp} 
+                NewToGame={NewToGame} 
+                forgetPassOpen={forgetPassOpen} 
+                onLoginSuccess={handleLoginSuccess} 
+            />
+            <ForgetPasswordPopup 
+                isOpen={forgetPass} 
+                onClose={forgetPassClose} 
+            />
         </>
     );
 };

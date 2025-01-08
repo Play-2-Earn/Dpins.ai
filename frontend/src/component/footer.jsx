@@ -1,74 +1,53 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import '../component/styles/header.css';
-import mainLogo from '/mainLogo.png';
+import React from 'react';
+import { Github, Twitter, MessageSquare } from 'lucide-react';
 
-const Footer = () => {
-    return (
-        <footer className="mt-6 mb-6">
-            {/* Logo and branding section */}
-            <div className="flex flex-row items-center justify-center sm:justify-start opacity-30 hover:opacity-60 transition-opacity delay-100 cursor-pointer mb-6">
-                <img src={mainLogo} alt="Stake_city" className="h-16 sm:h-24 mr-4" /> {/* Keep logo and text side by side */}
-                <p className="text-3xl sm:text-5xl whitespace-nowrap">Stake.city</p> 
+export default function Footer() {
+  return (
+    <footer className="py-12 bg-gray-900 border-t border-cyan-900/30">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div>
+            <h3 className="text-xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text">
+              DePINS.io
+            </h3>
+            <p className="text-gray-400">Building the future of decentralized infrastructure</p>
+          </div>
+          <div>
+            <h4 className="font-semibold mb-4">Quick Links</h4>
+            <ul className="space-y-2 text-gray-400">
+              <li><a href="#" className="hover:text-cyan-400 transition-colors duration-300">Explore</a></li>
+              <li><a href="#" className="hover:text-cyan-400 transition-colors duration-300">Store</a></li>
+              <li><a href="#" className="hover:text-cyan-400 transition-colors duration-300">About</a></li>
+              <li><a href="#" className="hover:text-cyan-400 transition-colors duration-300">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-semibold mb-4">Resources</h4>
+            <ul className="space-y-2 text-gray-400">
+              <li><a href="#" className="hover:text-cyan-400 transition-colors duration-300">Documentation</a></li>
+              <li><a href="#" className="hover:text-cyan-400 transition-colors duration-300">API</a></li>
+              <li><a href="#" className="hover:text-cyan-400 transition-colors duration-300">Support</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-semibold mb-4">Connect</h4>
+            <div className="flex space-x-4">
+              <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">
+                <Github className="w-6 h-6" />
+              </a>
+              <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">
+                <Twitter className="w-6 h-6" />
+              </a>
+              <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">
+                <MessageSquare className="w-6 h-6" />
+              </a>
             </div>
-
-            {/* Links section */}
-            <div className="mx-6 grid grid-cols-3 gap-8 sm:flex sm:flex-row sm:justify-evenly sm:items-start text-center sm:text-left">
-                {/* Play */}
-                <div className="mb-6 sm:mb-0">
-                    <h5 className="border-b mb-3 font-semibold">Play</h5>
-                    <ul>
-                        <li><Link to="/">What is Stake City?</Link></li>
-                        <li><Link to="/">Play on web</Link></li>
-                        <li><Link to="/">Events</Link></li>
-                        <li><Link to="/">Tutorial</Link></li>
-                        <li><Link to="/">Explore map</Link></li>
-                    </ul>
-                </div>
-
-                {/* Economy */}
-                <div className="mb-6 sm:mb-0">
-                    <h5 className="border-b mb-3 font-semibold">Economy</h5>
-                    <ul>
-                        <li><Link to="/">How it works?</Link></li>
-                        <li><Link to="/">Whitepaper</Link></li>
-                        <li><Link to="/">Tokenaiser</Link></li>
-                    </ul>
-                </div>
-
-                {/* Socials */}
-                <div className="mb-6 sm:mb-0">
-                    <h5 className="border-b mb-3 font-semibold">Socials</h5>
-                    <ul>
-                        <li><Link to="/">X/Twitter</Link></li>
-                        <li><Link to="/">Discord</Link></li>
-                        <li><Link to="/">Telegram</Link></li>
-                        <li><Link to="/">Facebook</Link></li>
-                    </ul>
-                </div>
-
-                {/* Support */}
-                <div className="mb-6 sm:mb-0">
-                    <h5 className="border-b mb-3 font-semibold">Support</h5>
-                    <ul>
-                        <li><Link to="/">Submit Request</Link></li>
-                        <li><Link to="/">Submit Bug</Link></li>
-                        <li><Link to="/">About Us</Link></li>
-                        <li><Link to="/contactus">Contact Us</Link></li>
-                    </ul>
-                </div>
-
-                {/* Legal */}
-                <div className="mb-6 sm:mb-0 ">
-                    <h5 className="border-b mb-3 font-semibold">Legal</h5>
-                    <ul>
-                        <li><Link to="/">Terms and Condition</Link></li>
-                        <li><Link to="/">Privacy and Policy</Link></li>
-                    </ul>
-                </div>
-            </div>
-        </footer>
-    );
+          </div>
+        </div>
+        <div className="mt-12 pt-8 border-t border-cyan-900/30 text-center text-gray-400">
+          <p>&copy; 2024 DePINS.io. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  );
 }
-
-export default Footer;
