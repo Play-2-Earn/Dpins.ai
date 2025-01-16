@@ -298,6 +298,7 @@ def get_answers():
         print("ERROR: ", str(e))
         return jsonify({"message": str(e)}), 500
 
+# Get a file to preview
 @answer_bp.route('/api/get_file/<file_id>', methods=['GET'])
 def get_file(file_id):
     try:
@@ -309,6 +310,17 @@ def get_file(file_id):
     except Exception as e:
         return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
+# Download a file
+@answer_bp.route('/api/get_file1/<file_id>', methods=['GET'])
+def download_file(file_id):
+    try:
+        file = fs.get(ObjectId(file_id))  # Assuming you are using GridFS for file storage
+        response = make_response(file.read())
+        response.headers['Content-Type'] = file.content_type
+        response.headers['Content-Disposition'] = f'attachment; filename={file.filename}'
+        return response
+    except Exception as e:
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
 # Report an answer
 @answer_bp.route('/api/report_answer/<answer_id>', methods=['POST'])

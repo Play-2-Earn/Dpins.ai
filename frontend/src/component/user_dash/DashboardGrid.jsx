@@ -365,7 +365,7 @@ const LevelSection = ({ profile }) => {
 
     return (
         <motion.div
-            className="bg-[#0A2435] rounded-2xl p-4 md:p-6 backdrop-blur-lg shadow-lg hover:shadow-xl transition-all duration-300"
+            className="bg-[#0A2435]  rounded-2xl p-4 md:p-6 backdrop-blur-lg shadow-lg hover:shadow-xl transition-all duration-300"
             initial={{ scale: 0.95 }}
             animate={{ scale: 1 }}
         >
@@ -394,7 +394,7 @@ const LevelSection = ({ profile }) => {
                 </motion.button>
             </div>
 
-            <div className="relative h-64 md:h-96 overflow-y-auto rounded-xl bg-[#051B2A]/50 p-4 scrollbar-thin scrollbar-thumb-[#45BEA6] scrollbar-track-transparent">
+            <div className="relative h-64 md:h-96 scrollbar-none overflow-y-auto rounded-xl bg-[#051B2A]/50 p-4 scrollbar-thin scrollbar-thumb-[#45BEA6] scrollbar-track-transparent">
                 {selectedSection === 'levels' ? (
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
@@ -550,10 +550,11 @@ const ActiveStakes = ({ isMobile }) => {
     // 2024-12-10T15:47:26.698+00:00 Expired Date
     return (
         <motion.div
-            className="bg-[#0A2435] rounded-2xl p-4 md:p-6 backdrop-blur-lg shadow-lg hover:shadow-xl transition-all duration-300"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-        >
+    className="bg-[#0A2435] rounded-2xl p-4 md:p-6 backdrop-blur-lg shadow-lg hover:shadow-xl transition-all
+    h-[400px] overflow-y-auto scrollbar-none duration-300"
+    initial={{ y: 20, opacity: 0 }}
+    animate={{ y: 0, opacity: 1 }}
+>
             <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg md:text-xl font-bold text-white">Active Stakes</h3>
                 <motion.div
@@ -795,5 +796,4 @@ const PlayerHistory = () => {
         </motion.div>
     );
 };
-
 export default DashboardGrid

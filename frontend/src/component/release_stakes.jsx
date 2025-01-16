@@ -90,23 +90,24 @@ const ReleaseStake = () => {
         }
     }, []);
 
+    const itemsPerPage = 4;
+    const totPages = Math.ceil(activeStakes.length / itemsPerPage);
     const nextPage = () => {
-        if (currentPageNum === totPages) {
-            alert("You are already on the last page.")
+        if (currentPageNum < totPages) {
+            setCurrentPageNum(prev => prev + 1);
         }
-        else {
-            setCurrentPageNum(currentPageNum + 1);
-        }
-    }
+    };
 
     const prePage = () => {
-        if (currentPageNum === 1) {
-            alert("You are already on the first page..")
+        if (currentPageNum > 1) {
+            setCurrentPageNum(prev => prev - 1);
         }
-        else {
-            setCurrentPageNum(currentPageNum - 1);
-        }
-    }
+    };
+     const currentTasks = activeStakes.length > 0  && activeStakes.slice(
+        (currentPageNum - 1) * itemsPerPage,
+        currentPageNum * itemsPerPage
+    );
+
 
     const taskPoupOpen = (stake, staking_reward, time_left, answers, question_id) => {
         setReleaseTaskPopup(true);
@@ -146,7 +147,7 @@ const ReleaseStake = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {activeStakes.length > 0 ? activeStakes.map(({ stake, stakeDetails, staking_reward, time_left, answers, question_id }, index) => (
+                                {activeStakes.length > 0 && currentTasks.length > 0 ? currentTasks.map(({ stake, stakeDetails, staking_reward, time_left, answers, question_id }, index) => (
                                     <tr className="text-center h-[50px] hover:bg-slate-600" key={question_id || index}>
                                         <td className="text-slate-400">{index + 1}</td>
                                         <td className="text-slate-400">{stake}</td>
@@ -175,7 +176,7 @@ const ReleaseStake = () => {
                     >
                         Previous
                     </button>
-
+                        <p className="font-bold"> {`${currentPageNum} / ${totPages}`} </p>
                     <button
                         onClick={() => nextPage()}
                         className="w-[100px] rounded-3xl bg-emerald-400 py-1 px-2 text-sm shadow-lg shadow-emerald-800 hover:bg-emerald-300 hover:text-grey hover:shadow-sm hover:shadow-emerald-500 transition-transform duration-300 ease-in-out hover:rotate-[5deg]"
@@ -192,3 +193,4 @@ const ReleaseStake = () => {
 }
 
 export default ReleaseStake;
+

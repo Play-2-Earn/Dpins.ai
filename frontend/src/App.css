@@ -10,3 +10,11 @@ body{
   width: 100%;
   min-height: 100vh;
 }
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and newer Edge versions */
+}
+
+.scrollbar-none {
+  scrollbar-width: none; /* For Firefox */
+}

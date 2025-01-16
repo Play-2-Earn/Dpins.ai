@@ -7,7 +7,7 @@ const UserRow = ({competitor , index}) => {
 
 
   return (
-    <div className={competitor.user_name === currentId ? "currentuser" : "userrow"}>
+    <div className={competitor.user_name === currentId ? "currentuser" : "userrow bg-gray-900/80"}>
         <div className='rank'>
             <img src={index <= 3 ? `crown${index + 1}.png` : `crown4.png`} alt='rank' className='rankimg'/>
             <p>{index + 1}</p>

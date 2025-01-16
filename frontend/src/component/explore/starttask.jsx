@@ -25,6 +25,8 @@ import {
 } from "../ui/dropdown-menu";
 import { useSelector } from "react-redux";
 import '../styles/starttask.css'
+import TaskFilesPreviewer from "../ui/TaskFilesPreviewer";
+
 
 const API_BASE_URL =
   process.env.NODE_ENV === "development"
@@ -39,6 +41,7 @@ const GamifiedTaskPopup = ({ task, isOpen, onClose }) => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [render , setRender] = useState(false)
   const [report , setReport] = useState({})
+  const [currentDocIndex, setCurrentDocIndex] = useState(0);
 
   useEffect(() => {
     const token = sessionStorage.getItem("jwtToken");
@@ -116,7 +119,6 @@ const GamifiedTaskPopup = ({ task, isOpen, onClose }) => {
       console.error("Error:", error);
     });
   };
-
     const handleSendMessage = () => {
       const token = sessionStorage.getItem("jwtToken");
 
@@ -205,6 +207,42 @@ const GamifiedTaskPopup = ({ task, isOpen, onClose }) => {
     setIsDescriptionExpanded(!isDescriptionExpanded);
   };
 
+  const documents = task && task.uploaded_files.length !== 0
+  ? task.uploaded_files.filter(file => {
+      if (typeof file === 'string') {
+          const allowedExtensions = ["docx", "doc", "pdf","xls", "xlsx", "png", "jpeg" , "jpg" , "ppt" , "pptx" , "txt"];
+          const fileExtension = file.split('.').pop().toLowerCase();
+          return allowedExtensions.includes(fileExtension);
+      }
+      return false; // Ignore non-string values (for safety)
+  })
+  : [];
+
+const videos = task && task.uploaded_files.length !== 0
+  ? task.uploaded_files.filter(file => {
+      if (typeof file === 'string') {
+          const allowedExtensions = ["mp4", "mkv", "webm", "ogg"];
+          const fileExtension = file.split('.').pop().toLowerCase();
+          return allowedExtensions.includes(fileExtension);
+      }
+      return false;
+  })
+  : [];
+
+const audioFiles = task && task.uploaded_files.length !== 0
+  ? task.uploaded_files.filter(file => {
+      if (typeof file === 'string') {
+          const allowedAudioExtensions = ["mp3", "wav"];
+          const fileExtension = file.split('.').pop().toLowerCase();
+          return allowedAudioExtensions.includes(fileExtension);
+      }
+      return false;
+  })
+  : [];
+  const textFiles = task && task.uploaded_files.length !== 0
+  ? task.uploaded_files.filter(file => typeof file === 'string' && !file.includes('.'))
+  : [];
+
   if (!isOpen) return null;
 
   return (
@@ -221,6 +259,11 @@ const GamifiedTaskPopup = ({ task, isOpen, onClose }) => {
             style={{
               boxShadow: "0 10px 0 #2563EB, 0 20px 0 #1E40AF",
               border: "8px solid #3B82F6",
+              maxHeight:"680px",
+              overflowY: "scroll",
+              // Hide the scrollbar
+              scrollbarWidth: "none",  // Firefox
+              msOverflowStyle: "none", // Internet Explorer and Edge
             }}
             initial={{ scale: 0.8, y: 50, rotateX: 20 }}
             animate={{ scale: 1, y: 0, rotateX: 0 }}
@@ -304,13 +347,17 @@ const GamifiedTaskPopup = ({ task, isOpen, onClose }) => {
 
               {/* Task Description */}
               <motion.div
-                className="bg-white p-3 rounded-2xl text-sm border-4 border-blue-500 shadow-lg overflow-hidden cursor-pointer"
-                style={{ boxShadow: "0 6px 0 #3B82F6" }}
-                animate={{ height: isDescriptionExpanded ? "auto" : "5rem" }}
+                className="descriptionscroll bg-white p-3 rounded-2xl text-sm border-4 border-blue-500 shadow-lg overflow-hidden overflow-y-scroll "
+                style={{
+                  boxShadow: "0 6px 0 #3B82F6",
+                  scrollbarWidth: "none",  // Firefox
+                  msOverflowStyle: "none", // Internet Explorer and Edge
+                 }}
+                animate={{  height: "auto"  }}
                 transition={{ duration: 0.3 }}
-                onClick={toggleDescription}
+                // onClick={toggleDescription}
               >
-                <div className="flex justify-between items-start mb-2">
+                <div className="flex justify-between items-start mb-2 w-[95%] mx-auto">
                   <h4
                     className="font-bold text-blue-700 text-lg"
                     style={{ textShadow: "1px 1px 0 #60A5FA" }}
@@ -360,7 +407,99 @@ const GamifiedTaskPopup = ({ task, isOpen, onClose }) => {
                           </DropdownMenu>
                   </div>
                 </div>
-                <p className="text-gray-700">{task.description}</p>
+                <p className="text-gray-700 w-[95%] mx-auto">{task.description}</p>
+                <div style={{ marginTop: "10px", display: 'flex',flexDirection:'column' , gap: '30px', alignItems: 'center', justifyContent: 'space-evenly' , width:'100%' , height:'auto' , maxHeight:"200px" }}>
+                {
+    documents.length !== 0 && (
+        <TaskFilesPreviewer
+            currentDocIndex={currentDocIndex}
+            setCurrentDocIndex={setCurrentDocIndex}
+            documentUrls={documents}
+        />
+    )
+} 
+
+{
+    videos.length !== 0 && (
+      <div className="flex flex-col gap-2 justify-start align-middle w-full pb-2">
+        <h4
+            className="font-bold text-blue-700 text-lg w-[95%] mx-auto"
+            style={{ textShadow: "1px 1px 0 #60A5FA" }}
+        >
+            {`${videos.length} ${videos.length > 1 ? 'Videos' : 'Video'}`}
+        </h4>
+        {videos.map((vid, i) => (
+            <video
+                key={i}
+                src={vid}
+                controls
+                style={{ width: "90%", height: "100%", margin: '0 auto' }}
+            >
+                Your browser does not support the video tag.
+            </video>
+        ))}
+      </div>
+    )
+}
+
+{
+    audioFiles.length !== 0 && (
+      <div className="flex flex-col gap-2 justify-start align-middle w-full">
+        <h4
+            className="font-bold text-blue-700 text-lg w-[95%] mx-auto"
+            style={{ textShadow: "1px 1px 0 #60A5FA" }}
+        >
+            {`${audioFiles.length} ${audioFiles.length > 1 ? 'Audios' : 'Audio'}`}
+        </h4>
+        {audioFiles.map((audio, i) => (
+            <audio
+                key={i}
+                src={audio}
+                controls
+                style={{ width: "90%", margin: '0 auto' }}
+            >
+                Your browser does not support the audio tag.
+            </audio>
+        ))}
+      </div>
+    )
+}
+
+{
+    textFiles.length !== 0 && (
+      <div className="flex flex-col gap-2 justify-start align-middle w-full">
+        <h4
+            className="font-bold text-blue-700 text-lg w-[95%] mx-auto"
+            style={{ textShadow: "1px 1px 0 #60A5FA" }}
+        >
+            {`${textFiles.length} ${textFiles.length > 1 ? 'Text Files' : 'Text File'}`}
+        </h4>
+        {textFiles.map((text, i) => (
+          <>
+          <a
+                key={i}
+                href={`http://localhost:5000/api/get_file/${text}`}
+                target="_blank"
+                style={{ width: "90%", margin: '0 auto', color: 'blue', textDecoration: 'underline' }}
+            >
+                Open Text File {i + 1}
+            </a>
+<a
+key={i}
+href={`http://localhost:5000/api/get_file1/${text}`}
+target="_blank"
+style={{ width: "90%", margin: '0 auto', color: 'blue', textDecoration: 'none' , fontWeight:'700' }}
+>
+Download Text File {i + 1}
+</a>
+</>
+        ))}
+      </div>
+    )
+}
+
+ </div>
+
               </motion.div>
 
               {/* Quest Chat - Expanded */}
@@ -369,7 +508,7 @@ const GamifiedTaskPopup = ({ task, isOpen, onClose }) => {
                 style={{
                   boxShadow: "0 6px 0 #3B82F6",
                   maxHeight: "calc(100vh - 450px)",
-                  minHeight: "250px",
+                  minHeight: "none",
                 }}
               >
                 <h4
@@ -418,7 +557,7 @@ const GamifiedTaskPopup = ({ task, isOpen, onClose }) => {
     const fileName = file.filename; // Extract the filename directly from the object
 
     return (
-      fileName.endsWith(".jpg") || fileName.endsWith(".png") ? (
+      fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".jpeg") ? (
         <a
           style={{ width: "100% !important" , cursor:'pointer'}}
           key={index}
@@ -473,7 +612,6 @@ const GamifiedTaskPopup = ({ task, isOpen, onClose }) => {
   })}
 </div>
 </div>
-
                         <div className="flex items-center space-x-2">
                           <Button
                             variant="ghost"
@@ -593,4 +731,4 @@ const GamifiedTaskPopup = ({ task, isOpen, onClose }) => {
   );
 };
 
-export default GamifiedTaskPopup;
+export default React.memo(GamifiedTaskPopup);

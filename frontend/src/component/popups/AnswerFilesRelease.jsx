@@ -3,57 +3,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import Button from "./popups_component/button";
 import { X, UserPlus, Key, Mail, Calendar, Phone, User, Paperclip } from "lucide-react"
 import '../styles/release_popup.css'
-import FinalReleasePopup from "./finalReleasePopup";
-import AnswerFilesReleaase from "./AnswerFilesRelease";
-
-const TaskReleasePopUp = ({ isOpen, onClose, displayDetails }) => {
-    const [openFiles, setopenFiles] = useState(false)
-    const [relatedFiles , setRelatedFiles ] = useState([])
-
-    const openWithFiles = (files) => {
-        setRelatedFiles(files)
-        setopenFiles(true)
-    }
 
 
-    const [finalReleasePopup, setFinalReleasePopup] = useState(false);
-    // const [ValuesForFinalCheck, setValuesForFinalCheck] = useState(null);
-    const selectedUsers = [];
-    console.log(displayDetails, "kkk")
-    const [selectedUser, setSelectedUser] = useState(selectedUsers);
+const AnswerFilesReleaase = ({ isOpen, onClose , files}) => {
 
-    if (!isOpen) return (null);
+if (!isOpen) return (null);
+const API_BASE_URL =
+process.env.NODE_ENV === "development"
+  ? "http://localhost:5000"
+  : process.env.Deployed_link;
 
-    const finalTaskReleasePopUpClose = () => {
-        setFinalReleasePopup(false);
-        // deselecting all the users
-        for (let i = 0; i = selectedUser.length; i++) {
-            selectedUser.pop();
-        }
-    }
-
-    const addingSelectedUsers = (username) => {
-        selectedUser.push(username)
-    }
-
-    const finalTaskReleasePopUpOpen = (username) => {
-        addingSelectedUsers(username)
-        setSelectedUser(selectedUser)
-        console.log(selectedUser.length)
-
-        if (selectedUser.length === 3) {
-            setFinalReleasePopup(true);
-        }
-    }
-
-    const afterFinalResponse = () => {
-        setFinalReleasePopup(false)
-        onClose()
-        alert("The stakes are being released.")
-        finalTaskReleasePopUpClose()
-    }
-
-
+console.log(files)
     return (
         <>
             <AnimatePresence>
@@ -83,13 +43,14 @@ const TaskReleasePopUp = ({ isOpen, onClose, displayDetails }) => {
                                     backgroundImage:
                                         "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.828-1.415 1.415L51.8 0h2.827zM5.373 0l-.83.828L5.96 2.243 8.2 0H5.374zM48.97 0l3.657 3.657-1.414 1.414L46.143 0h2.828zM11.03 0L7.372 3.657 8.787 5.07 13.857 0H11.03zm32.284 0L49.8 6.485 48.384 7.9l-7.9-7.9h2.83zM16.686 0L10.2 6.485 11.616 7.9l7.9-7.9h-2.83zm20.97 0l9.315 9.314-1.414 1.414L34.828 0h2.83zM22.344 0L13.03 9.314l1.414 1.414L25.172 0h-2.83zM32 0l12.142 12.142-1.414 1.414L30 .828 17.272 13.556l-1.414-1.414L28 0h4zM.284 0l28 28-1.414 1.414L0 2.544V0h.284zM0 5.373l25.456 25.455-1.414 1.415L0 8.2V5.374zm0 5.656l22.627 22.627-1.414 1.414L0 13.86v-2.83zm0 5.656l19.8 19.8-1.415 1.413L0 19.514v-2.83zm0 5.657l16.97 16.97-1.414 1.415L0 25.172v-2.83zM0 28l14.142 14.142-1.414 1.414L0 30.828V28zm0 5.657L11.314 44.97 9.9 46.386l-9.9-9.9v-2.828zm0 5.657L8.485 47.8 7.07 49.212 0 42.143v-2.83zm0 5.657l5.657 5.657-1.414 1.415L0 47.8v-2.83zm0 5.657l2.828 2.83-1.414 1.413L0 53.456v-2.83zM54.627 60L30 35.373 5.373 60H8.2L30 38.2 51.8 60h2.827zm-5.656 0L30 41.03 11.03 60h2.828L30 43.858 46.142 60h2.83zm-5.656 0L30 46.686 16.686 60h2.83L30 49.515 40.485 60h2.83zm-5.657 0L30 52.343 22.343 60h2.83L30 55.172 34.828 60h2.83zM32 60l-2-2-2 2h4zM59.716 0l-28 28 1.414 1.414L60 2.544V0h-.284zM60 5.373L34.544 30.828l1.414 1.415L60 8.2V5.374zm0 5.656L37.373 33.656l1.414 1.414L60 13.86v-2.83zm0 5.656l-19.8 19.8 1.415 1.413L60 19.514v-2.83zm0 5.657l-16.97 16.97 1.414 1.415L60 25.172v-2.83zM60 28L45.858 42.142l1.414 1.414L60 30.828V28zm0 5.657L48.686 44.97l1.415 1.415 9.9-9.9v-2.828zm0 5.657L51.515 47.8l1.414 1.413 7.07-7.07v-2.83zm0 5.657l-5.657 5.657 1.414 1.415L60 47.8v-2.83zm0 5.657l-2.828 2.83 1.414 1.413L60 53.456v-2.83zM39.9 16.385l1.414-1.414L30 3.658 18.686 14.97l1.415 1.415 9.9-9.9 9.9 9.9zm-2.83 2.828l1.415-1.414L30 9.313 21.515 17.8l1.414 1.413 7.07-7.07 7.07 7.07zm-2.827 2.83l1.414-1.416L30 14.97l-5.657 5.657 1.414 1.415L30 17.8l4.243 4.242zm-2.83 2.827l1.415-1.414L30 20.626l-2.828 2.83 1.414 1.414L30 23.456l1.414 1.414zM56.87 59.414L58.284 58 30 29.716 1.716 58l1.414 1.414L30 32.544l26.87 26.87z' fill='%23ffffff' fill-opacity='0.15' fill-rule='evenodd'/%3E%3C/svg%3E\")",
                                 }}
-                            ></div>
+                            >
+                            </div>
                             <div className="flex justify-between items-center relative z-10">
                                 <h2
                                     className="text-2xl font-extrabold uppercase tracking-wider"
                                     style={{ textShadow: "2px 2px 0 #0077BE, -2px -2px 0 #FF00FF" }}
                                 >
-                                    Release Stakes
+                                    Related Files {`(${files.length})`}
                                 </h2>
                                 <Button
                                     variant="ghost"
@@ -102,46 +63,69 @@ const TaskReleasePopUp = ({ isOpen, onClose, displayDetails }) => {
                             </div>
                         </div>
 
-                        <div className="p-4 space-y-3 bg-gradient-to-b from-gray-800 to-gray-900">
+                        <div className="p-4 space-y-3 bg-gradient-to-b from-gray-800 to-gray-900 h-5"
+                             style={{minHeight: "300px" , overflowX: "scroll" , overflowY:'hidden' , display:'flex' , alignItems:'center' , justifyContent:'flex-start' }}
+                        >
 
-                            <div className="">
-                                <div className="flex border-b border-gray-500 justify-evenly">
-                                    <h3 className="pb-2"><b>Title:</b> {displayDetails[0]}</h3>
-                                    <p className="">{displayDetails[2]}</p>
-                                </div>
-                                <div className=" px-7 py-4 bg-slate-800 w-5/5 mt-3 release_pop_up_scroll">
-                                    {displayDetails[3].length > 0 ? (
-                                        <>
-                                            <p className="mb-2">Select the best responder from below to release stake.</p>
-                                            <div className=" overflow-y-scroll h-44 release_pop_up_scroll">
-                                                {displayDetails[3].map(({ username, response , uploaded_files }, index) => (
-                                                    <div key={index} className="flex justify-between align-middle gap-2">
-                                                       <p onClick={() => finalTaskReleasePopUpOpen(username)} className="mt-3 hover:bg-slate-500 rounded-lg px-3 py-2 cursor-pointer flex-1"><b>{username} : </b> {`"${response}"`} </p>
-                                                       <label
-                                                            onClick={() => openWithFiles(uploaded_files)}
-                                                            htmlFor="file-upload"
-                                                            className=" cursor-pointer relative mt-3"
-                                                            style={{display:'flex' , justifyContent:'center' , alignItems:'center' , marginRight:'10px'}}
-                                                        >
-                                                        <p className="absolute z-20 w-5 h-5 bottom-[55%] right-0 bg-gradient-to-b  from-teal-400 to-slate-600 text-white p-1 rounded-full shadow-md text-xs md:text-sm font-bold "
-                                                        style={{display:'flex' , justifyContent:'center' , alignItems:'center'}}>
-                                                            {uploaded_files.length}
-                                                        </p>
-                                                            <Paperclip
-                                                            className="w-4 h-4 md:w-6 md:h-6 text-white hover:text-yellow-300 transition-colors duration-200"
-                                                            style={{ filter: "drop-shadow(2px 2px 0 #2563EB)" }}
-                                                            />
-                                                        </label>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <p className="mb-2">Nos responders yet.</p>
-                                    )}
+{files.map((file, index) => {
+    const fileSrc = `${API_BASE_URL}${file.url}`; // Construct the full URL for the file
+    const fileName = file.filename; // Extract the filename directly from the object
 
-                                </div>
-                            </div>
+    return (
+      <div key={index} style={{ width: "200px", height: "200px", margin: "5px" , display:'flex' , alignItems:'center' }}>
+        {fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".jpeg") ? (
+          <a
+            style={{ width: "100%", cursor: 'pointer' }}
+            href={fileSrc}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src={fileSrc}
+              alt={fileName}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          </a>
+        ) : fileName.endsWith(".pdf") ? (
+          <embed
+            src={fileSrc}
+            type="application/pdf"
+            style={{ width: "100%", height: "100%" }}
+          />
+        ) : fileName.endsWith(".mp4") || fileName.endsWith(".webm") || fileName.endsWith(".ogg") || fileName.endsWith(".mkv") ? (
+          <video
+            src={fileSrc}
+            controls
+            style={{ width: "100%", height: "100%" }}
+          >
+            Your browser does not support the video tag.
+          </video>
+        ) : fileName.endsWith(".xls") || fileName.endsWith(".xlsx") ? (
+          <a
+            href={fileSrc}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: "block", color: "green" }}
+          >
+            {fileName}
+          </a>
+        ) : (
+          <a
+            className="hover:underline"
+            href={fileSrc}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: "block", color: "white", textDecoration:'none' , fontWeight:'700' }}
+            onMouseOver={(e) => e.target.style.textDecoration = 'underline'}
+            onMouseOut={(e) => e.target.style.textDecoration = 'none'}
+          >
+            {fileName}
+          </a>
+        )}
+      </div>
+    );
+  })}
+
                         </div>
 
                         {/* Footer */}
@@ -153,9 +137,7 @@ const TaskReleasePopUp = ({ isOpen, onClose, displayDetails }) => {
                     </motion.div>
                 </motion.div>
             </AnimatePresence>
-            <FinalReleasePopup isOpen={finalReleasePopup} onClose={finalTaskReleasePopUpClose} afterFinalResponse={afterFinalResponse} ValuesForFinalCheck={selectedUser} Task={displayDetails[4]} />
-            <AnswerFilesReleaase isOpen={openFiles} onClose={() => setopenFiles(false)} files={relatedFiles} />
         </>
     )
 }
-export default TaskReleasePopUp
+export default AnswerFilesReleaase

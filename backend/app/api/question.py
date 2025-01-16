@@ -10,8 +10,24 @@ import jwt
 import os
 from dotenv import load_dotenv
 from flask_cors import cross_origin
+from bson import ObjectId
+from cloudinary.uploader import upload
+import cloudinary
+from gridfs import GridFS
+from pymongo import MongoClient
+
+
+MONGODB_HOST = os.getenv("MONGO_URI")
+client = MongoClient(MONGODB_HOST)
+db = client['stake_city']
+fs = GridFS(db)  # Initialize GridFS
 
 load_dotenv()
+cloudinary.config(
+    cloud_name=os.getenv("CLOUD_NAME"),
+    api_key= os.getenv("API_KEY"),
+    api_secret= os.getenv("API_SECRET")
+)
 
 # Blueprint for questions
 question_bp = Blueprint('questions', __name__)
@@ -22,14 +38,16 @@ def get_location_name(latitude, longitude):
     headers = {
         'User-Agent': 'StakeCityApp/1.0 (your_email@example.com)'  # Replace with your app info
     }
-    
+
     response = requests.get(url, headers=headers)
-    
+
     if response.status_code == 200:
         location_data = response.json()
         return location_data.get('display_name')  # Fetch the full location name
     else:
         return None
+
+RAW_EXTENSIONS = {"docx", "doc", "pdf","xls", "xlsx", "png", "jpeg" , "jpg" , "ppt" , "pptx"}
 
 @question_bp.route('/api/drop_task', methods=['POST'])
 def pin_location_and_ask_question():
@@ -38,7 +56,7 @@ def pin_location_and_ask_question():
     if not auth_token:
         return jsonify({"message": "Authorization token is required."}), 401
     auth_token = auth_token.split(' ')[1]
-    # Verify the token
+
     try:
         secret_key = os.getenv('SECRET_KEY')
         decoded_token = jwt.decode(auth_token, secret_key, algorithms=["HS256"])
@@ -48,83 +66,85 @@ def pin_location_and_ask_question():
     except jwt.InvalidTokenError:
         return jsonify({"message": "Invalid token."}), 401
 
-    # Fetch user by user_name
     user = User.objects(user_name=user_name).first()
     if not user:
         return jsonify({"message": "User not found."}), 404
-    
-    # Check if the user has an expired task (question) pending to release STC
-    try:
-        expired_tasks = Question.objects(
-            user=user,
-            status=QuestionStatus.EXPIRED_PENDING_RELEASE.value
-        )
 
+    try:
+        expired_tasks = Question.objects(user=user, status=QuestionStatus.EXPIRED_PENDING_RELEASE.value)
         if expired_tasks:
             task_list = [{"question_id": str(task.id), "question_title": task.question_title} for task in expired_tasks]
-            return jsonify({
-                "message": "You have expired tasks pending to release.",
-                "expired_tasks": task_list
-            }), 400
+            return jsonify({"message": "You have expired tasks pending to release.", "expired_tasks": task_list}), 400
     except Exception as e:
-        print(f"Error fetching expired tasks: {e}")
-        return jsonify({"message": "An error occurred while checking tasks."}), 500
+        return jsonify({"message": f"Error checking tasks: {str(e)}"}), 500
 
-    # Fetch request parameters
-    question_data = request.json
+    title = request.form.get('taskTitle')
+    question = request.form.get('taskDescription')
+    latitude = request.form.get('lat')
+    longitude = request.form.get('lng')
+    stake_amount = request.form.get('stakeAmount')
+    verbal_address = request.form.get('verbalAddress')
+    files = request.files.getlist('files')
 
-    # Required fields
-    title = question_data.get('taskTitle')
-    question = question_data.get('taskDescription')
-    latitude = question_data.get('lat')
-    longitude = question_data.get('lng')
-    stake_amount = question_data.get('stakeAmount')
-    verbal_address = question_data.get('verbalAddress')
-
-    # Validate the required fields
     if not question or not latitude or not longitude or stake_amount is None:
         return jsonify({"message": "task, latitude, longitude, and stake_amount are required."}), 400
 
-    # Validate the stake_amount (must be a positive number)
     try:
         stake_amount = float(stake_amount)
         if stake_amount <= 0:
-            return jsonify({"message": "stake_amount must be a positive number."}), 400
+            return jsonify({"message": "stake_amount must be positive."}), 400
     except ValueError:
-        return jsonify({"message": "Invalid stake_amount provided. It must be a number."}), 400
+        return jsonify({"message": "Invalid stake_amount."}), 400
 
-    # Default visibility period is 90 days
+    uploaded_files = []
+    errors = []
+    for file in files:
+        if file.filename != '':
+            file_extension = file.filename.rsplit('.', 1)[1].lower()
+            if file_extension == 'txt':
+                try:
+                    file_id = fs.put(file, filename=file.filename)
+                    uploaded_files.append({"filename": file.filename, "url": str(file_id)})
+                except Exception as e:
+                    errors.append({"filename": file.filename, "error": str(e)})
+            else:
+                resource_type = "raw" if file_extension in RAW_EXTENSIONS else "auto"
+                try:
+                    result = upload(file, resource_type=resource_type)
+                    if resource_type == "raw":
+                        url_last_part = result['url'].split('/')[-1]
+                        result = cloudinary.uploader.rename(
+                            url_last_part,
+                            f"{url_last_part}.{file_extension}",
+                            resource_type="raw"
+                        )
+                    uploaded_files.append({"filename": file.filename, "url": result['url']})
+                except Exception as e:
+                    errors.append({"filename": file.filename, "error": str(e)})
+
     visible_until = datetime.utcnow() + timedelta(days=90)
-
-    # Create the new question
     new_question = Question(
-    user=user.id,
-    user_name=user.user_name,
-    question_text=question,  # Updated to match the field name
-    question_title=title,
-    coordinates={'lat': latitude, 'lng': longitude},
-    stake_amount=stake_amount,
-    location_name=verbal_address,
-    visible_until=visible_until,
-    #verbal_address=verbal_address,  # Added verbal_address
+        user=user.id,
+        user_name=user.user_name,
+        question_text=question,
+        question_title=title,
+        coordinates={'lat': latitude, 'lng': longitude},
+        stake_amount=stake_amount,
+        location_name=verbal_address,
+        visible_until=visible_until,
+        file_ids=[file['url'] for file in uploaded_files]
     )
-    
-    # Save the new question to generate the ID
     new_question.save()
-
-    # Now update the question_id field
     new_question.update(set__question_id=str(new_question.id))
 
-    # Create navigation URL for the map
-    navigation_url = f"https://www.google.com/maps?q={latitude},{longitude}"
-
-    # Update Wallet Balance (Balance > Locked STC)
     wallet = Wallet.objects(user=user).first()
     wallet.balance -= stake_amount
     wallet.locked_amount += stake_amount
     wallet.save()
 
-    share_url = f"http://localhost:5173/explore/{str(new_question.id)}" #Needs frontend consultation
+    navigation_url = f"https://www.google.com/maps?q={latitude},{longitude}"
+    share_url = f"{os.getenv('SHARE_HOST')}/explore/{str(new_question.id)}"
+
     return jsonify({
         "question_id": str(new_question.id),
         "full_name": user.full_name,
@@ -136,12 +156,14 @@ def pin_location_and_ask_question():
         "stake_amount": stake_amount,
         "visible_until": visible_until,
         "share_url": share_url,
-    }), 200
+        "uploaded_files": uploaded_files,
+        "errors": errors
+    }), 207 if errors else 200
 
 # Get All Active Tasks
 @question_bp.route('/api/get_all_tasks', methods=['GET'])
 def get_user_questions():
-    try: 
+    try:
         header = request.headers
         auth_token = header.get('Authorization')
         if not auth_token:
@@ -183,18 +205,20 @@ def get_user_questions():
                             "full_name": full_name,
                             "taskTitle": question.question_title,
                             "taskDescription": question.question_text,
-                            "coordinates": question.coordinates,  
+                            "coordinates": question.coordinates,
                             "stake_amount": question.stake_amount,
                             "location_name": question.location_name,
                             "visible_until": question.visible_until,
-                            "share_url": f"http://localhost:5173/explore/{str(question.id)}",
+                            "share_url": f"{os.getenv("SHARE_HOST")}/explore/{str(question.id)}",
                             "navigation_url": f"https://www.google.com/maps?q={question.coordinates['lat']},{question.coordinates['lng']}",
+                            "uploaded_files": question.file_ids,
+
                         }
                         questions_data.append(question_data)
                     except Exception as e:
                         # Log the error for the specific question
                         print(f"Error processing question {question.id}: {str(e)}")
-                
+
                 # Send the list of question data as a JSON event
                 yield f"data: {json.dumps(questions_data)}\n\n"
 
@@ -222,12 +246,13 @@ def view_question(question_id):
         "user_name": question.user.user_name,
         "taskTitle": question.question_title,
         "taskDescription": question.question_text,
-        "coordinates": question.coordinates,  
+        "coordinates": question.coordinates,
         "stake_amount": question.stake_amount,
         "location_name": question.location_name,
         "visible_until": question.visible_until,
         "share_url": f"http:localhost:5173/explore/{str(question.id)}",
         "navigation_url": f"https://www.google.com/maps?q={question.coordinates['lat']},{question.coordinates['lng']}",
+        "uploaded_files": question.file_ids
         # If you have an updated_at field, uncomment the line below
         # "updated_at": question.updated_at,
     }), 200

@@ -21,6 +21,7 @@
     justify-content: center;
     width: 95%;
     margin: 0 auto  ;
+    margin-top:30px !important;
 }
 
 .containerr > .leaderbody{
@@ -276,8 +277,3 @@
     }
   }
 
-.containerr > nav {
- width: 96.9% !important;
- margin-bottom: -2%;
- margin-top: 3px;
-}

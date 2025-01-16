@@ -9,6 +9,13 @@ from flask_cors import cross_origin
 from datetime import datetime, timezone
 import jwt
 import os
+from gridfs import GridFS
+from pymongo import MongoClient
+
+MONGODB_HOST = os.getenv("MONGO_URI")
+client = MongoClient(MONGODB_HOST)
+db = client['stake_city']
+fs = GridFS(db)  # Initialize GridFS
 
 # Create a Blueprint for the user dashboard
 dashboard_bp = Blueprint('dashboard', __name__)
@@ -721,49 +728,36 @@ def get_active_questions():
         if not auth_token:
             print("Token required")
             return jsonify({"message": "Authorization token is required."}), 401
+
         auth_token = auth_token.split(' ')[1]
-        # Verify the token
         try:
             secret_key = os.getenv('SECRET_KEY')
             decoded_token = jwt.decode(auth_token, secret_key, algorithms=["HS256"])
             user_name = decoded_token.get('user_name')
         except jwt.ExpiredSignatureError:
-            print("Token expire")
+            print("Token expired")
             return jsonify({"message": "Token has expired."}), 401
         except jwt.InvalidTokenError:
             print("Token invalid")
             return jsonify({"message": "Invalid token."}), 401
 
-        # Fetch user object
         user = User.objects(user_name=user_name).first()
         if not user:
             return jsonify({"error": "User not found."}), 404
 
-        # Retrieve the query parameter to decide if answers should be included in the response
         include_answers = request.args.get('include_answers')
 
-        # Helper function to calculate the time left for a task to expire
         def format_time_left(visible_until):
-            """
-            Calculate the time left as a countdown from 90 days.
-            """
-            now = datetime.now(timezone.utc)  # Ensure `now` is timezone-aware
-
-            # If visible_until is a string, convert it to a datetime object and make it timezone-aware
+            now = datetime.now(timezone.utc)
             if isinstance(visible_until, str):
                 visible_until = datetime.fromisoformat(visible_until.replace("Z", "+00:00")).replace(tzinfo=timezone.utc)
             elif isinstance(visible_until, datetime) and visible_until.tzinfo is None:
-                # If visible_until is naive, assume it's in UTC and make it timezone-aware
                 visible_until = datetime.fromtimestamp(visible_until.timestamp(), tz=timezone.utc)
 
-            # Calculate the time difference
             delta = visible_until - now
-
-            # Task ahs expired but have more than 3 responders
             if delta.total_seconds() <= 0:
                 return "Expired, Pending Release"
 
-            # Active tasks
             days = delta.days
             hours, remainder = divmod(delta.seconds, 3600)
             minutes, _ = divmod(remainder, 60)
@@ -773,7 +767,6 @@ def get_active_questions():
             else:
                 return f"{hours} hours, {minutes} minutes"
 
-        # Function that generates events to be sent over the SSE stream every 60s
         def generateEvent():
             while True:
                 questions = Question.objects(
@@ -782,21 +775,37 @@ def get_active_questions():
                 )
 
                 if include_answers:
-                    questions_list = [{
-                        "username": question.user_name,
-                        "stake": question.question_title,
-                        "stakeDetails": question.question_text,
-                        "staking_reward": str(question.stake_amount),
-                        "time_left": format_time_left(question.visible_until),
-                        "expire_time": question.visible_until,
-                        "answers": [
-                            {
+                    questions_list = []
+                    for question in questions:
+                        answers_data = []
+                        for answer in Answer.objects(question_id=question.id):
+                            file_urls = []
+                            for file_id in answer.uploaded_files:
+                                try:
+                                    file = fs.get(ObjectId(file_id))
+                                    file_url = f"/api/get_file/{file_id}"
+                                    file_name = file.filename
+                                    file_urls.append({"url": file_url, "filename": file_name})
+                                except Exception as e:
+                                    print(f"Error retrieving file with ID {file_id}: {e}")
+                                    file_urls.append({"url": f"Invalid file ID: {file_id}", "filename": "Unknown File"})
+
+                            answers_data.append({
                                 "response": answer.answer_text,
-                                "username": answer.answer_giver_user_id.user_name
-                            } for answer in Answer.objects(question_id=question.id)
-                        ],
-                        "question_id": str(question.id)
-                    } for question in questions]
+                                "username": answer.answer_giver_user_id.user_name,
+                                "uploaded_files": file_urls
+                            })
+
+                        questions_list.append({
+                            "username": question.user_name,
+                            "stake": question.question_title,
+                            "stakeDetails": question.question_text,
+                            "staking_reward": str(question.stake_amount),
+                            "time_left": format_time_left(question.visible_until),
+                            "expire_time": question.visible_until,
+                            "answers": answers_data,
+                            "question_id": str(question.id)
+                        })
                 else:
                     questions_list = [{
                         "username": question.user_name,
@@ -808,13 +817,9 @@ def get_active_questions():
                         "question_id": str(question.id),
                     } for question in questions]
 
-                # Send the list of questions as a JSON event
                 yield f"data: {json.dumps(questions_list)}\n\n"
-
-                # Wait for 60 seconds before sending the next update
                 sleep(60)
 
-        # Return response as an event stream
         return Response(generateEvent(), content_type="text/event-stream")
     except Exception as e:
         print(str(e))

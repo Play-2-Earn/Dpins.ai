@@ -25,6 +25,15 @@ const DropTaskPopup = ({ isOpen, onClose, onSuccess, lng, lat, verbalAddress }) 
   });
   const showAlert = useAlert();
   const dispatch = useDispatch();
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const handleFileUpload = (event) => {
+    const files = Array.from(event.target.files);
+    setUploadedFiles([...uploadedFiles, ...files]);
+  };
+
+  const handleRemoveFile = (index) => {
+    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
+  };
 
   const handleYes = () => {
     setStep(1);
@@ -45,6 +54,7 @@ const DropTaskPopup = ({ isOpen, onClose, onSuccess, lng, lat, verbalAddress }) 
     setStep(0);
     setTaskDescription("");
     setStakeAmount("");
+    setUploadedFiles([])
     onClose();
   };
 
@@ -67,27 +77,33 @@ const DropTaskPopup = ({ isOpen, onClose, onSuccess, lng, lat, verbalAddress }) 
 
       const jwtToken = sessionStorage.getItem("jwtToken");
 
-      //  mit prajapati (development and production link support)
+      // Development and production link support
       const API_BASE_URL =
         process.env.NODE_ENV === "development"
           ? "http://localhost:5000"
           : process.env.Deployed_link;
 
-      // API - Drop Task
+      // Create FormData
+      const formData = new FormData();
+      formData.append("taskTitle", taskTitle);
+      formData.append("taskDescription", taskDescription);
+      formData.append("stakeAmount", stakeAmount);
+      formData.append("lat", lat);
+      formData.append("lng", lng);
+      formData.append("verbalAddress", verbalAddress);
+
+      // Append files to FormData (assuming `files` is an array of file objects)
+      uploadedFiles.forEach((file) => {
+        formData.append("files", file);
+      });
+
+      // Send request
       const response = await fetch(`${API_BASE_URL}/api/drop_task`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${jwtToken}`,
         },
-        body: JSON.stringify({
-          taskTitle,
-          taskDescription,
-          stakeAmount,
-          lng,
-          lat,
-          verbalAddress,
-        }),
+        body: formData, // Send FormData
       });
 
       if (response.ok) {
@@ -212,7 +228,7 @@ const DropTaskPopup = ({ isOpen, onClose, onSuccess, lng, lat, verbalAddress }) 
                 <div className="space-y-4">
                   <div>
                     <label
-                      htmlFor="task-description"
+                      htmlFor="task-title"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
                       Task Title
@@ -240,6 +256,37 @@ const DropTaskPopup = ({ isOpen, onClose, onSuccess, lng, lat, verbalAddress }) 
                       className="w-full p-2 border-2 border-blue-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       rows={4}
                     />
+                  </div>
+                  <div>
+                     {/* File input */}
+                  <label
+                    htmlFor="file-upload"
+                    className="block text-sm font-medium text-gray-700 mt-4"
+                  >
+                    Attach File
+                  </label>
+                  <input
+                    type="file"
+                    id="file-upload"
+                    onChange={handleFileUpload}
+                    className="w-full p-2 border-2 border-blue-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  {uploadedFiles.length > 0 && (
+                <div className="mt-2 text-sm text-gray-700 space-y-2">
+                    {uploadedFiles && uploadedFiles.map((f, index) => (
+                <div key={index} className="flex items-center gap-2">
+                    <span>{f.name}</span> {/* Assuming 'name' is a property of the file object */}
+                    <button
+                        type="button"
+                        onClick={() => handleRemoveFile(index)}
+                        className="text-red-600 hover:text-red-800 focus:outline-none"
+                    >
+                        Remove
+                    </button>
+                </div>
+            ))}
+                </div>
+            )}
                   </div>
                   <div>
                     <label

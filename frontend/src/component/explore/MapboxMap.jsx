@@ -20,13 +20,11 @@ mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
 const MapboxMap = ({ showControls, q_id }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [currentLocation, setCurrentLocation] = useState("");
   const [activePopup, setActivePopup] = useState(null);
   const [dropTaskSuccess, setDropTaskSuccess] = useState(false);
   const [taskCoordinates, setTaskCoordinates] = useState(null);
   const [taskMarkers, setTaskMarkers] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
-  const [center, setCenter] = useState([0, 0]);
   const [searchPerformed, setSearchPerformed] = useState(false);
   const [query, setQuery] = useState("");
   const [welcomePopupOpen, setWelcomePopupOpen] = useState(true);
@@ -112,7 +110,8 @@ const MapboxMap = ({ showControls, q_id }) => {
             full_name: data.full_name,
             stakeAmount: data.stake_amount,
             share_url: data.share_url,
-            navigation_url: data.navigation_url
+            navigation_url: data.navigation_url,
+            uploaded_files: data.uploaded_files
           });
 
           handleMarkerClick(data);
@@ -168,7 +167,7 @@ const MapboxMap = ({ showControls, q_id }) => {
               .map(line => JSON.parse(line.substring(6)))
               .filter(task => task !== null);
 
-            tasks.forEach(setAllTasks);            
+            tasks.forEach(setAllTasks);
           } catch (readError) {
             if (readError.name !== 'AbortError') {
               console.error('Stream reading error:', readError);
@@ -314,7 +313,8 @@ const MapboxMap = ({ showControls, q_id }) => {
         full_name: task.full_name,
         stakeAmount: task.stake_amount,
         share_url: task.share_url,
-        navigation_url: task.navigation_url
+        navigation_url: task.navigation_url,
+        uploaded_files: task.uploaded_files
       });
     });
 
@@ -533,8 +533,8 @@ const MapboxMap = ({ showControls, q_id }) => {
 
   return (
     <div>
-      <div class="top-rectangle" />
-      <div class="bottom-rectangle" />
+      <div className="top-rectangle" />
+      <div className="bottom-rectangle" />
 
       {/* User info should always be visible */}
       <UserInfo user={userData} />

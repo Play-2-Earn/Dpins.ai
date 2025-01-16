@@ -18,7 +18,6 @@ const WalletInfo = ({ userData }) => {
   const [openWalletDetail, setOpenWalletDetail] = useState(false);
   const [openAddCoin, setOpenAddCoin] = useState(false);
   const [tolltipText, setTooltipText] = useState('Copy to clipboard');
-
   // Handler - Copy to Clipboard
   function handleCopy() {
     navigator.clipboard.writeText(walletAddr);

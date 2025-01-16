@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import Button from "./popups_component/button";
 import { X } from "lucide-react";
-import { LuAlertTriangle } from "react-icons/lu";
+import { IoAlertCircleOutline } from "react-icons/io5";
 
 const AddWalletNote = ({ isOpen, setOpenNote, setOpenAddWallet }) => {
 
@@ -41,7 +41,7 @@ const AddWalletNote = ({ isOpen, setOpenNote, setOpenAddWallet }) => {
               <div className="flex justify-between items-center relative z-10">
                 <h2
                   className="text-2xl font-extrabold tracking-wider flex items-center gap-2">
-                  <LuAlertTriangle /> Important
+                  <IoAlertCircleOutline /> Important
                 </h2>
                 <Button
                   variant="ghost"

@@ -16,3 +16,14 @@
 .menuu > .item:last-child {
     border-bottom: none;
 }
+.scrollhide::-webkit-scrollbar {
+    display: none;
+  }
+
+.descriptionscroll::-webkit-scrollbar {
+    display: none;
+  }
+
+.descriptionscroll{
+  padding: 16px 0 !important;
+}

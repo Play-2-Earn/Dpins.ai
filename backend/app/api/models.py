@@ -92,7 +92,7 @@ class Question(Document):
     )
     visible_until = DateTimeField(default=lambda: datetime.utcnow() + timedelta(days=90), required=True)
     associated_answers = ListField(ReferenceField('Answer'), default=[])
-
+    file_ids = ListField(StringField() , default=[])  # Save file IDs in the Question document
 
 class QuestionExtension(Document):
     question = ReferenceField(Question, required=True)
