@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 
 export default function ChainAnimation() {
   const containerRef = useRef(null);
@@ -8,9 +8,9 @@ export default function ChainAnimation() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('animate-chain');
+            entry.target.classList.add("animate-chain");
           } else {
-            entry.target.classList.remove('animate-chain'); // Replay animation if needed
+            entry.target.classList.remove("animate-chain"); // Replay animation if needed
           }
         });
       },
@@ -20,7 +20,7 @@ export default function ChainAnimation() {
     const container = containerRef.current;
 
     if (container) {
-      const links = container.querySelectorAll('.chain-link');
+      const links = container.querySelectorAll(".chain-link");
       links.forEach((link) => observer.observe(link));
     }
 
@@ -68,7 +68,7 @@ export default function ChainAnimation() {
           {Array.from({ length: 20 }).map((_, index) => (
             <div key={index} className="chain-link">
               <span className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text">
-                DePINS.io
+                Dpins.ai
               </span>
             </div>
           ))}

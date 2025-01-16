@@ -9,11 +9,6 @@ import LeaderBoard from "./component/Leaderboard/LeaderBoard";
 import ContactUs from "./component/Contactus";
 import { useSelector } from "react-redux";
 import AlertMessage from "../../frontend/src/component/explore/AlertMessage";
-import Store from "./component/DepinsStore/Store";
-import ProductDetails from "./component/DepinsStore/ProductDetails";
-import Cart from "./component/DepinsStore/Cart";
-import Checkout from "./component/DepinsStore/Checkout";
-import OrderSuccess from "./component/DepinsStore/OrderSuccess";
 
 function App() {
   const { openAlert } = useSelector((state) => state.alertState);
@@ -38,12 +33,6 @@ function App() {
           <Route path="/contactus" element={<ContactUs />}>
             {" "}
           </Route>
-          {/*DepinsStore Routes*/}
-          <Route path="/store" element={<Store />} />
-          <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/order-success" element={<OrderSuccess />} />{" "}
         </Routes>
       </BrowserRouter>
 

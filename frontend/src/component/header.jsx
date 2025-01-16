@@ -77,7 +77,7 @@ const Header = () => {
             <Link to="/" className="hover:cursor-pointer">
               <img
                 src={mainlogo}
-                alt="Depins.io"
+                alt="Dpins.ai"
                 className="w-28 transform hover:scale-105 transition-transform duration-300"
               />
             </Link>

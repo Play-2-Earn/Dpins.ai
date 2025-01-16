@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
+import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import Button from "./popups_component/button";
 import { X } from "lucide-react";
 import { IoAlertCircleOutline } from "react-icons/io5";
 
 const AddWalletNote = ({ isOpen, setOpenNote, setOpenAddWallet }) => {
-
   // Handler - On Pop Up Close
   function onPopUpClose() {
     setOpenNote(false);
@@ -35,12 +34,9 @@ const AddWalletNote = ({ isOpen, setOpenNote, setOpenAddWallet }) => {
         >
           <DialogPanel transition>
             {/* Header */}
-            <DialogTitle
-              className="bg-transparent text-white-1 p-3 pl-5 px-3 relative"
-            >
+            <DialogTitle className="bg-transparent text-white-1 p-3 pl-5 px-3 relative">
               <div className="flex justify-between items-center relative z-10">
-                <h2
-                  className="text-2xl font-extrabold tracking-wider flex items-center gap-2">
+                <h2 className="text-2xl font-extrabold tracking-wider flex items-center gap-2">
                   <IoAlertCircleOutline /> Important
                 </h2>
                 <Button
@@ -55,17 +51,23 @@ const AddWalletNote = ({ isOpen, setOpenNote, setOpenAddWallet }) => {
             </DialogTitle>
 
             {/* Content */}
-            <div className='px-5 pr-7 text-sm text-justify text-gray-1 gap-2 flex flex-col'>
+            <div className="px-5 pr-7 text-sm text-justify text-gray-1 gap-2 flex flex-col">
               <p>
-                Your staked coins will be sent via Stellar Lumens (XLM). Please ensure you have a valid Stellar wallet or create one if you don’t already have one. Recommended options include xBull, Freighter, or Albedo.
+                Your staked coins will be sent via Stellar Lumens (XLM). Please
+                ensure you have a valid Stellar wallet or create one if you
+                don’t already have one. Recommended options include xBull,
+                Freighter, or Albedo.
               </p>
               <p>
-                It is crucial to double-check and input the correct wallet address, as Stake.City cannot be held responsible for any loss of coins due to an incorrect address, and lost coins cannot be recovered or redeemed through us.
+                It is crucial to double-check and input the correct wallet
+                address, as Dpins.ai cannot be held responsible for any loss of
+                coins due to an incorrect address, and lost coins cannot be
+                recovered or redeemed through us.
               </p>
             </div>
 
             {/* Buttonss */}
-            <div className='flex flex-row gap-2 w-full justify-end p-4 px-5 mt-5'>
+            <div className="flex flex-row gap-2 w-full justify-end p-4 px-5 mt-5">
               {/* Btn - Accept */}
               <button
                 type="button"
@@ -84,12 +86,11 @@ const AddWalletNote = ({ isOpen, setOpenNote, setOpenAddWallet }) => {
                 Cancel
               </button>
             </div>
-
           </DialogPanel>
         </motion.div>
-      </motion.div >
-    </Dialog >
-  )
-}
+      </motion.div>
+    </Dialog>
+  );
+};
 
-export default AddWalletNote
+export default AddWalletNote;

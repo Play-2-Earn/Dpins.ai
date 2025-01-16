@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-import { getFresnelMat } from '../helpers/getFresnelMat'; // Assuming this file is still located here
-import '../component/styles/globe.css';
+import React, { useEffect, useRef } from "react";
+import * as THREE from "three";
+import { getFresnelMat } from "../helpers/getFresnelMat"; // Assuming this file is still located here
+import "../component/styles/globe.css";
 
 const Globe = () => {
   const globeRef = useRef();
@@ -20,9 +20,11 @@ const Globe = () => {
       const screenWidth = window.innerWidth;
 
       // Set camera position and globe scale based on screen width
-      if (screenWidth < 768) { // Small screen (mobile)
+      if (screenWidth < 768) {
+        // Small screen (mobile)
         camera.position.z = 3.8; // Zoom out a bit more for mobile
-      } else { // Larger screens (tablet, desktop)
+      } else {
+        // Larger screens (tablet, desktop)
         camera.position.z = 2; // Keep original camera position for larger screens
       }
     };
@@ -42,7 +44,7 @@ const Globe = () => {
 
     // Earth setup
     const earthGroup = new THREE.Group();
-    earthGroup.rotation.z = -23.4 * Math.PI / 180;
+    earthGroup.rotation.z = (-23.4 * Math.PI) / 180;
     scene.add(earthGroup);
 
     const detail = 6; // Reduced detail level for performance
@@ -131,12 +133,12 @@ const Globe = () => {
       adjustGlobeSize(camera); // Adjust globe size on resize
       camera.updateProjectionMatrix();
     };
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", handleScroll);
       cancelAnimationFrame(frameId); // Stop animation on unmount
       container.removeChild(renderer.domElement); // Clean up renderer
     };

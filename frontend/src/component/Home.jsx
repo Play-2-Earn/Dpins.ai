@@ -57,7 +57,7 @@ export default function Home() {
             Decentralizing the World, One Pin at a Time
           </h1>
           <p className="text-xl md:text-2xl text-cyan-100 mb-8">
-            Activate, Verify, and Earn with DePIN infrastructure anywhere on the
+            Activate, Verify, and Earn with DPIN infrastructure anywhere on the
             globe
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -66,9 +66,9 @@ export default function Home() {
             </button>
             <button
               className="px-8 py-3 border border-cyan-600 rounded-full font-semibold hover:bg-cyan-600/10 transition-all duration-300 glass-effect"
-              onClick={() => navigate("/store")}
+              onClick={() => window.open("https://www.depins.io/", "_blank")}
             >
-              Visit DePINS Store
+              Visit DePIN Store
             </button>
           </div>
         </div>
@@ -78,7 +78,7 @@ export default function Home() {
       <section className="py-20 bg-gray-800/50">
         <div className="container mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text">
-            What is DePINS.io?
+            What is Dpins.ai?
           </h2>
           <div className="grid md:grid-cols-3 gap-12">
             {[
@@ -222,16 +222,16 @@ export default function Home() {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-b from-cyan-950 to-gray-900">
         <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-1 gap-12 items-center text-center">
             {/* Text Content */}
-            <div className="text-center lg:text-left">
+            <div>
               <h2 className="text-3xl lg:text-4xl font-bold mb-6 bg-gradient-to-r from-cyan-400 to-cyan-600 text-transparent bg-clip-text">
                 Start Building Decentralized Networks Today
               </h2>
               <p className="text-lg lg:text-xl text-cyan-100/80 mb-6">
                 Join thousands of contributors worldwide
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button className="px-6 lg:px-8 py-3 bg-cyan-600 hover:bg-cyan-700 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 animate-glow">
                   Sign Up for Free
                 </button>
@@ -239,16 +239,6 @@ export default function Home() {
                   Learn More
                 </button>
               </div>
-            </div>
-            {/* Spline/iframe Container */}
-            <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px]">
-              <iframe
-                src="https://my.spline.design/exploretheworld-e20d10c4b67427ff35dca7ed33165572/"
-                className="w-full h-full border-0"
-                style={{
-                  objectFit: "cover", // Ensures proper scaling of content
-                }}
-              ></iframe>
             </div>
           </div>
         </div>
