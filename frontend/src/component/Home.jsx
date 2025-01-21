@@ -75,10 +75,10 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section className="py-20 bg-gray-800/50">
+      <section className="py-10 bg-gray-800/50">
         <div className="container mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text">
-            What is Dpins.ai?
+            What is dPINs?
           </h2>
           <div className="grid md:grid-cols-3 gap-12">
             {[
@@ -117,7 +117,7 @@ export default function Home() {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-gradient-to-b from-gray-900 to-gray-800">
+      <section className="py-10 bg-gradient-to-b from-gray-900 to-gray-800">
         <div className="container mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text">
             How Does It Work?
@@ -166,7 +166,7 @@ export default function Home() {
       <ChainAnimation />
 
       {/* Store Preview */}
-      <section className="py-20 bg-gray-800/50">
+      <section className="py-10 bg-gray-800/50">
         <div className="container mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text">
             DePINS Store
@@ -189,7 +189,7 @@ export default function Home() {
               },
               {
                 image:
-                  "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80",
+                  "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80",
                 title: "Network Node",
                 price: "$299",
                 tokens: "300 Tokens",

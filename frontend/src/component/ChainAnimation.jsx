@@ -1,46 +1,47 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export default function ChainAnimation() {
   const containerRef = useRef(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("animate-chain");
-          } else {
-            entry.target.classList.remove("animate-chain"); // Replay animation if needed
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
+    const handleScroll = () => {
+      const currentScroll = window.pageYOffset;
+      const direction = currentScroll > scrollPosition ? -1 : 1;
+      setScrollPosition(currentScroll);
 
-    const container = containerRef.current;
+      if (containerRef.current) {
+        const currentTransform = getComputedStyle(
+          containerRef.current
+        ).transform;
+        const translateX =
+          currentTransform !== "none"
+            ? parseFloat(currentTransform.split(",")[4])
+            : 0;
 
-    if (container) {
-      const links = container.querySelectorAll(".chain-link");
-      links.forEach((link) => observer.observe(link));
-    }
+        containerRef.current.style.transform = `translateX(${
+          translateX + direction * 10
+        }px)`;
+      }
+    };
 
-    return () => observer.disconnect();
-  }, []);
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [scrollPosition]);
 
   return (
     <>
       <style>
         {`
-          @keyframes chainMove {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-          }
-
           .chain-container {
             display: flex;
-            gap: 2rem;
-            padding: 2rem 0;
+            gap: 1.5rem; /* Reduced spacing */
+            padding: 1rem 0; /* Reduced spacing */
             white-space: nowrap;
+            transition: transform 0.1s ease-out;
           }
 
           .chain-link {
@@ -58,21 +59,21 @@ export default function ChainAnimation() {
             background: linear-gradient(to right, #0891b2, #0ea5e9);
           }
 
-          .animate-chain .chain-link {
-            animation: chainMove 20s linear infinite;
+          .chain-link span {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(to right, #38bdf8, #0ea5e9);
+            -webkit-background-clip: text;
+            color: transparent;
           }
         `}
       </style>
-      <div ref={containerRef} className="py-20 overflow-hidden bg-gray-900">
-        <div className="chain-container">
-          {Array.from({ length: 20 }).map((_, index) => (
-            <div key={index} className="chain-link">
-              <span className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text">
-                Dpins.ai
-              </span>
-            </div>
-          ))}
-        </div>
+      <div ref={containerRef} className="chain-container">
+        {Array.from({ length: 20 }).map((_, index) => (
+          <div key={index} className="chain-link">
+            <span>Dpins.ai</span>
+          </div>
+        ))}
       </div>
     </>
   );
