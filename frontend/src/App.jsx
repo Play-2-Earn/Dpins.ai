@@ -29,13 +29,13 @@ function App() {
               <>
                   <Route path="/" element={<Navigate to={'/explore'} />}></Route>
                   <Route path="/userdashboard" element={<UserDashboard />}/>
+                  <Route path="/leaderboard" element={<LeaderBoard />} />
               </>
             )
           }
           {/* this is the place where all the routes will be added, kindly take a consideration to comments*/}
           <Route path="/explore" element={<Explore />}></Route>
           <Route path="/explore/:q_id" element={<Explore />} />
-          <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/releaseStake" element={<ReleaseStake />}>
             {" "}
           </Route>

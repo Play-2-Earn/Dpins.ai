@@ -3,7 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import '../styles/taskbar.css'; // External CSS for styles
 import '../styles/searchbar.css'; // Import the CSS file
 
-const Taskbar = ({ onSearch }) => {
+const Taskbar = ({ onSearch , setInputActive , setHasSearched , inputActive}) => {
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef(null); // Reference for input field
@@ -12,6 +12,7 @@ const Taskbar = ({ onSearch }) => {
 
 
   const toggleSearchBar = () => {
+    setInputActive(true)
     if (isSearchBarVisible) {
       if (searchQuery.trim() === "") {
         setIsSearchBarVisible(false);
@@ -36,6 +37,7 @@ const Taskbar = ({ onSearch }) => {
   const handleSearchSubmit = (e) => {
     if (e) e.preventDefault();
     if (onSearch && searchQuery.trim() !== "") {
+      setHasSearched(true)
       onSearch(searchQuery);
       setSearchQuery("");
       setIsSearchBarVisible(false);
@@ -54,7 +56,7 @@ const Taskbar = ({ onSearch }) => {
 
   return (
     <>
-      <div className={`search-bar-container ${isSearchBarVisible ? 'search-bar-visible' : ''}`}>
+      <div className={`search-bar-container ${isSearchBarVisible && inputActive? 'search-bar-visible' : ''}`}>
         <input
           type="text"
           ref={inputRef}
@@ -82,14 +84,15 @@ const Taskbar = ({ onSearch }) => {
                   <button className="avatar-btn" disabled={isDisabled}>
                     <img src="/avatar.svg" alt="Avatar" className="avatar-icon" />
                   </button>
+                  <button className="taskbar-btn" onClick={() => navigate('/leaderboard')} >
+                  <img src="/release-stake-icon.png" alt="Release-Stake" className="taskbar-icon release-stake" />
+                  </button>
               </>
                          )
           }
 
 
-          <button className="taskbar-btn" onClick={() => navigate('/leaderboard')} >
-            <img src="/release-stake-icon.png" alt="Release-Stake" className="taskbar-icon release-stake" />
-          </button>
+
           {
             !isDisabled && (
                 <button className="taskbar-btn" disabled={isDisabled}>

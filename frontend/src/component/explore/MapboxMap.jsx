@@ -17,7 +17,7 @@ import Header from '../header';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
-const MapboxMap = ({ showControls, q_id }) => {
+const MapboxMap = ({ showControls, q_id  , setInputActive , setTypedText  ,setHasSearched ,inputActive , setIndex}) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [activePopup, setActivePopup] = useState(null);
   const [dropTaskSuccess, setDropTaskSuccess] = useState(false);
@@ -338,6 +338,11 @@ const MapboxMap = ({ showControls, q_id }) => {
   // Function to reset zoom and center to initial values
   const handleZoomReset = () => {
     if (mapRef.current) {
+      setInputActive(false);
+      setHasSearched(false);
+      setTypedText("")
+ setIndex(0)
+
       const currentZoom = mapRef.current.getZoom();
 
       let speed = 2;   // Default speed for moderate zoom levels
@@ -365,6 +370,7 @@ const MapboxMap = ({ showControls, q_id }) => {
         easing: (t) => t,
         essential: true,
       });
+
     }
   };
 
@@ -438,6 +444,7 @@ const MapboxMap = ({ showControls, q_id }) => {
 
       // Mouse hold to create a task
       map.on('mousedown', (e) => {
+        setInputActive(true)
         isMouseHeld = true;
         mouseHoldTimeout = setTimeout(() => {
           if (isMouseHeld) {
@@ -563,7 +570,7 @@ const visitor = !sessionStorage.getItem('jwtToken')
       {welcomePopupOpen ? <WelcomePopup onClose={handleCloseWelcomePopup} /> :
         <>
           {/* <SearchBar onSearch={handleSearch} /> */}
-          <Taskbar onSearch={handleSearch} />
+          <Taskbar onSearch={handleSearch} setHasSearched={setHasSearched} setInputActive={setInputActive} inputActive={inputActive}/>
           <ZoomOutButton onZoomReset={handleZoomReset} />
           <GamifiedTaskPopup
             task={selectedTask}
