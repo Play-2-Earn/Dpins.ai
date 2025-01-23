@@ -7,6 +7,9 @@ const Taskbar = ({ onSearch }) => {
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef(null); // Reference for input field
+  const isDisabled = !sessionStorage.getItem('jwtToken'); // Check if jwtToken is null
+
+
 
   const toggleSearchBar = () => {
     if (isSearchBarVisible) {
@@ -46,6 +49,9 @@ const Taskbar = ({ onSearch }) => {
   };
 
   const navigate = useNavigate()
+
+
+
   return (
     <>
       <div className={`search-bar-container ${isSearchBarVisible ? 'search-bar-visible' : ''}`}>
@@ -60,27 +66,38 @@ const Taskbar = ({ onSearch }) => {
         />
       </div>
 
-      <div className="taskbar-container">
-        <div className="taskbar">
+      <div className={`taskbar-container${isDisabled ? '-visit' : ''}`}>
+        <div className={`taskbar${isDisabled ? '-visit' : ''}`}>
           <button onClick={toggleSearchBar} className="taskbar-btn">
             <img src="/search-icon.svg" alt="Search" className="taskbar-icon tasks" />
           </button>
 
-          <button className="taskbar-btn">
-            <img src="/location-icon.png" alt="Chat" className="taskbar-icon messages" />
-          </button>
+          {
+            !isDisabled && (
+              <>
+                  <button className="taskbar-btn"  disabled={isDisabled}>
+                    <img src="/location-icon.png" alt="Chat" className="taskbar-icon messages" />
+                  </button>
 
-          <button className="avatar-btn">
-            <img src="/avatar.svg" alt="Avatar" className="avatar-icon" />
-          </button>
+                  <button className="avatar-btn" disabled={isDisabled}>
+                    <img src="/avatar.svg" alt="Avatar" className="avatar-icon" />
+                  </button>
+              </>
+                         )
+          }
+
 
           <button className="taskbar-btn" onClick={() => navigate('/leaderboard')} >
             <img src="/release-stake-icon.png" alt="Release-Stake" className="taskbar-icon release-stake" />
           </button>
+          {
+            !isDisabled && (
+                <button className="taskbar-btn" disabled={isDisabled}>
+                  <img src="/settings-icon.png" alt="Settings" className="taskbar-icon settings" />
+                </button>
+            )
+          }
 
-          <button className="taskbar-btn">
-            <img src="/settings-icon.png" alt="Settings" className="taskbar-icon settings" />
-          </button>
         </div>
       </div>
     </>

@@ -164,25 +164,25 @@ def pin_location_and_ask_question():
 @question_bp.route('/api/get_all_tasks', methods=['GET'])
 def get_user_questions():
     try:
-        header = request.headers
-        auth_token = header.get('Authorization')
-        if not auth_token:
-            return jsonify({"message": "Authorization token is required."}), 401
-        auth_token = auth_token.split(' ')[1]
-        # Verify the token
-        try:
-            secret_key = os.getenv('SECRET_KEY')
-            decoded_token = jwt.decode(auth_token, secret_key, algorithms=["HS256"])
-            user_name = decoded_token.get('user_name')
-        except jwt.ExpiredSignatureError:
-            return jsonify({"message": "Token has expired."}), 401
-        except jwt.InvalidTokenError:
-            return jsonify({"message": "Invalid token."}), 401
+        # header = request.headers
+        # auth_token = header.get('Authorization')
+        # if not auth_token:
+        #     return jsonify({"message": "Authorization token is required."}), 401
+        # auth_token = auth_token.split(' ')[1]
+        # # Verify the token
+        # try:
+        #     secret_key = os.getenv('SECRET_KEY')
+        #     decoded_token = jwt.decode(auth_token, secret_key, algorithms=["HS256"])
+        #     user_name = decoded_token.get('user_name')
+        # except jwt.ExpiredSignatureError:
+        #     return jsonify({"message": "Token has expired."}), 401
+        # except jwt.InvalidTokenError:
+        #     return jsonify({"message": "Invalid token."}), 401
 
         # Fetch user object
-        user = User.objects(user_name=user_name).first()
-        if not user:
-            return jsonify({"message": "User not found."}), 404
+        # user = User.objects(user_name=user_name).first()
+        # if not user:
+        #     return jsonify({"message": "User not found."}), 404
 
         # Function that generates events to be sent over the SSE stream every 60s
         def generateEvent():

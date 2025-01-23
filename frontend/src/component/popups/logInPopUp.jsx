@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "./popups_component/button";
 import { Input } from "./popups_component/input";
 import { Label } from "./popups_component/label";
-import { X, UserPlus, Key, Mail, Calendar, Phone, User } from "lucide-react";
+import { X, Key, User } from "lucide-react";
 import { useParams } from "react-router-dom";
 
 const LogInPopUp = ({
@@ -13,15 +13,18 @@ const LogInPopUp = ({
   forgetPassOpen,
   onLoginSuccess,
 }) => {
-  if (!isOpen) return null;
   const { q_id } = useParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(null);
 
+  if (!isOpen) return null;
+
   const handleLogin = async (event) => {
     event.preventDefault();
     setLoading(true);
+
+
 
     try {
       //  mit prajapati (development and production link support)
@@ -41,7 +44,6 @@ const LogInPopUp = ({
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Error:", errorData);
-
         throw new Error(errorData.message || "Failed to login");
       }
 
@@ -51,9 +53,8 @@ const LogInPopUp = ({
       sessionStorage.setItem("jwtToken", data.token);
       onLoginSuccess();
       onClose();
-      if (q_id) {
-        console.log(`Received q_id: ${q_id}`);
-        window.location.href = `/explore/${String(q_id)}`;
+      if (data.token) {
+        window.location.href = `/`;
       }
       // window.location.href = "/dashboard";
     } catch (err) {

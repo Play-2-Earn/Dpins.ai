@@ -13,7 +13,8 @@ export default function DashboardHeader({ toggleSidebar }) {
 
 	const handleSignOut = () => {
 		sessionStorage.removeItem('jwtToken')
-		navigate('/')
+		sessionStorage.removeItem('user')
+		navigate('/explore')
 	}
 
 	// Track Current Windows Size

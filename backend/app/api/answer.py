@@ -224,27 +224,27 @@ def dislike_answer(answer_id):
 # Get all answers for a given question_id
 @answer_bp.route('/api/get_answers', methods=['GET'])
 def get_answers():
-    # Verify the token
-    header = request.headers
-    print(request.headers)  # Debugging: Log headers
-    auth_token = header.get('Authorization')
-    if not auth_token:
-        return jsonify({"message": "Authorization token is required."}), 401
+    # # Verify the token
+    # header = request.headers
+    # print(request.headers)  # Debugging: Log headers
+    # auth_token = header.get('Authorization')
+    # if not auth_token:
+    #     return jsonify({"message": "Authorization token is required."}), 401
 
-    auth_token = auth_token.split(' ')[1]
-    try:
-        secret_key = os.getenv('SECRET_KEY')
-        decoded_token = jwt.decode(auth_token, secret_key, algorithms=["HS256"])
-        user_name = decoded_token.get('user_name')
-    except jwt.ExpiredSignatureError:
-        return jsonify({"message": "Token has expired."}), 401
-    except jwt.InvalidTokenError:
-        return jsonify({"message": "Invalid token."}), 401
+    # auth_token = auth_token.split(' ')[1]
+    # try:
+    #     secret_key = os.getenv('SECRET_KEY')
+    #     decoded_token = jwt.decode(auth_token, secret_key, algorithms=["HS256"])
+    #     user_name = decoded_token.get('user_name')
+    # except jwt.ExpiredSignatureError:
+    #     return jsonify({"message": "Token has expired."}), 401
+    # except jwt.InvalidTokenError:
+    #     return jsonify({"message": "Invalid token."}), 401
 
-    # Fetch the user by user_name to ensure they are valid
-    user = User.objects(user_name=user_name).first()
-    if not user:
-        return jsonify({"message": "User not found."}), 404
+    # # Fetch the user by user_name to ensure they are valid
+    # user = User.objects(user_name=user_name).first()
+    # if not user:
+    #     return jsonify({"message": "User not found."}), 404
 
     # Get question_id from query parameters
     question_id = request.args.get('question_id')

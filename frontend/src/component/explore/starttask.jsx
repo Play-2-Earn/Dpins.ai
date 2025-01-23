@@ -42,9 +42,11 @@ const GamifiedTaskPopup = ({ task, isOpen, onClose }) => {
   const [render , setRender] = useState(false)
   const [report , setReport] = useState({})
   const [currentDocIndex, setCurrentDocIndex] = useState(0);
+  const isDisabled = !sessionStorage.getItem('jwtToken'); // Check if jwtToken is null
+  const disable = { pointerEvents: 'none', opacity: 0.7  };
 
   useEffect(() => {
-    const token = sessionStorage.getItem("jwtToken");
+    // const token =sessionStorage.getItem("jwtToken");
 
     if (task) {
 
@@ -58,7 +60,7 @@ const GamifiedTaskPopup = ({ task, isOpen, onClose }) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
         },
       })
         .then((res) => res.json())
@@ -373,8 +375,9 @@ const audioFiles = task && task.uploaded_files.length !== 0
                       <Share2 className="w-5 h-5"
                         onClick={handleShare} />
                     </Button>
-
-                    <DropdownMenu >
+{
+  !isDisabled && (<>
+ <DropdownMenu >
                             <DropdownMenuTrigger asChild>
                             <Button
                       variant="ghost"
@@ -405,6 +408,9 @@ const audioFiles = task && task.uploaded_files.length !== 0
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
+  </>)
+}
+
                   </div>
                 </div>
                 <p className="text-gray-700 w-[95%] mx-auto">{task.description}</p>
@@ -417,7 +423,7 @@ const audioFiles = task && task.uploaded_files.length !== 0
             documentUrls={documents}
         />
     )
-} 
+}
 
 {
     videos.length !== 0 && (
@@ -625,7 +631,9 @@ Download Text File {i + 1}
                               <span className="ml-1 text-xs">{chat.likes.length}</span>
                             )}
                           </Button>
-                          <DropdownMenu >
+                          {
+                            !isDisabled && (<>
+                            <DropdownMenu >
                             <DropdownMenuTrigger asChild>
                               <Button
                                 variant="ghost"
@@ -665,6 +673,8 @@ Download Text File {i + 1}
                               <DropdownMenuItem className="item">Pin message</DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
+                            </>)
+                          }
                         </div>
                       </motion.div>
                     ))}
@@ -693,10 +703,12 @@ Download Text File {i + 1}
                 multiple
                 onChange={handleFileUpload}
                 className="hidden"
+
               />
               <label
                 htmlFor="file-upload"
                 className=" cursor-pointer relative z-10 "
+                style={isDisabled ? disable : {}}
               >
               <p className="absolute z-20 w-6 h-6 bottom-[65%] right-0 bg-red-500 text-white p-1 rounded-full shadow-md text-xs md:text-sm flex align-middle justify-center font-extrabold">
                 {uploadedFiles.length}
@@ -709,17 +721,17 @@ Download Text File {i + 1}
               <div className="flex-grow mx-2 md:mx-3 relative z-10">
                 <Input
                   type="text"
-                  placeholder="Type your quest message..."
+                  placeholder={isDisabled ? "Plese login first to answer" : "Type your quest message..."}
                   value={chatMessage}
                   onChange={(e) => setChatMessage(e.target.value)}
-                  className="w-full text-xs md:text-sm rounded-full border-4 border-white bg-blue-100 text-blue-900 placeholder-blue-400 focus:ring-2 focus:ring-yellow-300 focus:border-white"
-                  style={{ boxShadow: "0 4px 0 #2563EB" }}
+                  className=" w-full text-xs md:text-sm rounded-full border-4 border-white bg-blue-100 text-blue-900 placeholder-blue-400 focus:ring-2 focus:ring-yellow-300 focus:border-white"
+                  style={isDisabled ? { boxShadow: "0 4px 0 #2563EB", ...disable } : { boxShadow: "0 4px 0 #2563EB" }}
                 />
               </div>
               <Button
                 onClick={handleSendMessage}
                 className="relative z-10 text-xs md:text-sm p-2 md:p-3 bg-yellow-400 hover:bg-yellow-300 text-blue-900 font-bold rounded-full transform hover:scale-105 transition-all duration-200"
-                style={{ boxShadow: "0 4px 0 #D97706" }}
+                style={isDisabled ? { boxShadow: "0 4px 0 #D97706" , ...disable} : { boxShadow: "0 4px 0 #D97706" }}
               >
                 <Send className="w-5 h-5 md:w-6 md:h-6" />
               </Button>

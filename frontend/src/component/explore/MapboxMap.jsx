@@ -1,8 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from 'react';
 import DropTaskPopup from "./droptask";
 import GamifiedTaskPopup from "./starttask";
-import SearchBar from "./searchbar";
 import UserInfo from './UserInfo';
 import WalletInfo from './WalletInfo';
 import WelcomePopup from './WelcomePopup';
@@ -11,10 +9,11 @@ import ZoomOutButton from './ZoomOutButton';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '../styles/mapboxmap.css';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setLockedAmount, setWalletAddress, setWalletBalance } from '../../Store/Slices/Wallet';
 import useAlert from '../../Hooks/useAlert';
 import { setUserName } from '../../Store/Slices/User';
+import Header from '../header';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
@@ -128,16 +127,16 @@ const MapboxMap = ({ showControls, q_id }) => {
     // API - SSE to continously receive all updated question/task/stake data
     const fetchLocations = async () => {
       try {
-        const token = sessionStorage.getItem("jwtToken");
-        if (!token) {
-          console.error("No JWT token found in session storage");
-          return;
-        }
+        // const token = sessionStorage.getItem("jwtToken");
+        // if (!token) {
+        //   console.error("No JWT token found in session storage");
+        //   return;
+        // }
 
         const response = await fetch(`${API_BASE_URL}/api/get_all_tasks`, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${token}`,
+           // 'Authorization': `Bearer ${token}`,
             'Accept': 'text/event-stream'
           },
           signal,
@@ -443,7 +442,7 @@ const MapboxMap = ({ showControls, q_id }) => {
         mouseHoldTimeout = setTimeout(() => {
           if (isMouseHeld) {
             console.log("Mouse held", e.lngLat);
-            handleDropQuestClick(e.lngLat);
+            sessionStorage.getItem('jwtToken') ? handleDropQuestClick(e.lngLat) : alert("Please Login to Drop a Task");
           }
         }, 1000);
       });
@@ -530,25 +529,35 @@ const MapboxMap = ({ showControls, q_id }) => {
     };
   }, []);
 
-
+const visitor = !sessionStorage.getItem('jwtToken')
   return (
     <div>
-      <div className="top-rectangle" />
+      <div className="top-rectangle" >
+        {
+           visitor && <Header />
+        }
+      </div>
       <div className="bottom-rectangle" />
 
       {/* User info should always be visible */}
-      <UserInfo user={userData} />
-
-      {/* Wallet Info */}
-      <WalletInfo userData={userData} />
+      {
+        !visitor &&
+        (<>
+            <UserInfo user={userData} />
+            {/* Wallet Info */}
+            <WalletInfo userData={userData} />
+        </>)
+      }
 
       {/* Globe */}
       <div
         id="map-container"
         ref={mapContainer}
-        style={{ width: '100%', height: '100vh', outline: 'none' }}
+        style={{ width: '100%', height: '100vh', outline: 'none'}}
         tabIndex="0"
       />
+
+
 
       {/* Show the welcome popup when it's open */}
       {welcomePopupOpen ? <WelcomePopup onClose={handleCloseWelcomePopup} /> :
